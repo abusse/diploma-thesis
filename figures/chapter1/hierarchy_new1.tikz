@@ -1,0 +1,29 @@
+\begin{tikzpicture}\titleFont
+	\def \baseangle {35};
+	\pgfmathsetmacro\base{{11*tan(\baseangle)}};
+	\pgfmathsetmacro\sinlen{{(5.5/5.5) * sin(\baseangle)}};
+	\pgfmathsetmacro\coslen{{(5.5/5.5) * cos(\baseangle)}};
+	\def \level {0};
+	\draw[line width=0.5pt, fill=myGreen] ({\level * \sinlen},{\level * \coslen}) -- ({\base - \level * \sinlen},{\level * \coslen}) -- ({\base - (\level +1) * \sinlen},{(\level + 1)*\coslen}) -- ({(\level + 1)*\sinlen},{(\level + 1)*\coslen}) -- cycle;
+	\node[anchor=center] at ({0.3*\base},{( 0.5 + \level ) * \coslen }) {\small\breakC{optische\\Speichermedien}};
+	\node[anchor=center] at ({0.7*\base},{( 0.5 + \level ) * \coslen }) {\small\breakC{flashbasierte\\Speichermedien}};
+	\def \level {1};
+	\draw[line width=0.5pt, fill=myBlue] ({\level * \sinlen},{\level * \coslen}) -- ({\base - \level * \sinlen},{\level * \coslen}) -- ({\base - (\level +1) * \sinlen},{(\level + 1)*\coslen}) -- ({(\level + 1)*\sinlen},{(\level + 1)*\coslen}) -- cycle;
+	\node[anchor=center] at ({0.3*\base},{( 0.5 + \level ) * \coslen }) {Festplatten};
+	\node[anchor=center] at ({0.7*\base},{( 0.5 + \level ) * \coslen }) {SSDs};
+	\def \level {2};
+	\draw[line width=0.5pt, fill=myBlue] ({\level * \sinlen},{\level * \coslen}) -- ({\base - \level * \sinlen},{\level * \coslen}) -- ({\base - (\level +1) * \sinlen},{(\level + 1)*\coslen}) -- ({(\level + 1)*\sinlen},{(\level + 1)*\coslen}) -- cycle;
+	\node[anchor=center] at ({0.5*\base},{( 0.5 + \level ) * \coslen }) {Arbeitsspeicher};
+	\def \level {3};
+	\draw[line width=0.5pt, fill=myOrange] ({\level * \sinlen},{\level * \coslen}) -- ({\base - \level * \sinlen},{\level * \coslen}) -- ({\base - (\level +1) * \sinlen},{(\level + 1)*\coslen}) -- ({(\level + 1)*\sinlen},{(\level + 1)*\coslen}) -- cycle;
+	\node[anchor=center] at ({0.5*\base},{( 0.5 + \level ) * \coslen }) {Level-2 Cache};
+	\def \level {4};
+	\draw[line width=0.5pt, fill=myOrange] ({\level * \sinlen},{\level * \coslen}) -- ({\base - \level * \sinlen},{\level * \coslen}) -- ({\base - (\level +1) * \sinlen},{(\level + 1)*\coslen}) -- ({(\level + 1)*\sinlen},{(\level + 1)*\coslen}) -- cycle;
+	\node[anchor=center] at ({0.5*\base},{( 0.4 + \level ) * \coslen }) {Level-1 Cache};
+	\def \level {5};
+	\draw[line width=0.5pt, fill=myOrange] ({\level * \sinlen},{\level * \coslen}) -- ({\base - \level * \sinlen},{\level * \coslen}) -- ({\base - (\level +1.7) * \sinlen},{(\level + 1.7)*\coslen}) -- cycle;
+	\node[anchor=center] at ({0.5*\base},{( 0.75 + \level ) * \coslen }) {CPU-};
+	\node[anchor=center] at ({0.5*\base},{( 0.25 + \level ) * \coslen }) {Register};
+
+	\draw[line width=0.5pt] ({0.5*\base},0) -- ++(0,{2*\coslen});
+\end{tikzpicture}

@@ -1,0 +1,39 @@
+\begin{tikzpicture}\titleFont
+    \begin{axis}[
+        xbar,
+        xmode = log,
+        /pgf/bar shift=0pt,
+        ytick={0,1,2},
+        tick style={draw=none},
+        x tick label style={/pgf/number format/1000 sep={\,}},
+        axis y line*=none,
+        axis x line*=bottom,
+        xtick={1,10,100,1000,10000},
+        log ticks with fixed point,
+        width=0.75\textwidth,
+        bar width=6mm,
+        y=15mm,
+        xmin=1,
+        xmax=20000,
+        enlarge y limits={abs=0.625},
+        xmajorgrids=true,
+        every axis plot/.append style={fill},
+        x axis line style={->},
+        xticklabels={
+            {\footnotesize 1\,\textmu{}s},
+            {\footnotesize 10\,\textmu{}s},
+            {\footnotesize 100\,\textmu{}s},
+            {\footnotesize 1.000\,\textmu{}s},
+            {\footnotesize 10.000\,\textmu{}s}
+        },
+        yticklabels={
+            {\footnotesize HDD},
+            {\footnotesize SSD},
+            {\footnotesize DRAM}
+        }
+    ]
+        \addplot[myBlue]  coordinates {(10,2)};
+        \addplot[myBlue]   coordinates {(250,1)};
+        \addplot[myBlue] coordinates {(10000,0)};
+    \end{axis}  
+\end{tikzpicture}

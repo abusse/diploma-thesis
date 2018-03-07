@@ -1,0 +1,42 @@
+\begin{tikzpicture}\titleFont
+	\def \baseangle {35};
+	\pgfmathsetmacro\base{{11*tan(\baseangle)}};
+	\pgfmathsetmacro\sinlen{{(5.5/5.5) * sin(\baseangle)}};
+	\pgfmathsetmacro\coslen{{(5.5/5.5) * cos(\baseangle)}};
+	\def \level {0};
+	\draw[line width=0.5pt, fill=myGreen] ({\level * \sinlen},{\level * \coslen}) -- ({\base - \level * \sinlen},{\level * \coslen}) -- ({\base - (\level +1) * \sinlen},{(\level + 1)*\coslen}) -- ({(\level + 1)*\sinlen},{(\level + 1)*\coslen}) -- cycle;
+	\node[anchor=center] at ({0.5*\base},{( 0.5 + \level ) * \coslen }) {optische Speichermedien};
+	\def \level {1};
+	\draw[line width=0.5pt, fill=myBlue] ({\level * \sinlen},{\level * \coslen}) -- ({\base - \level * \sinlen},{\level * \coslen}) -- ({\base - (\level +1) * \sinlen},{(\level + 1)*\coslen}) -- ({(\level + 1)*\sinlen},{(\level + 1)*\coslen}) -- cycle;
+	\node[anchor=center] at ({0.5*\base},{( 0.5 + \level ) * \coslen }) {Festplatten};
+	\def \level {2};
+	\draw[line width=0.5pt, fill=myBlue] ({\level * \sinlen},{\level * \coslen}) -- ({\base - \level * \sinlen},{\level * \coslen}) -- ({\base - (\level +1) * \sinlen},{(\level + 1)*\coslen}) -- ({(\level + 1)*\sinlen},{(\level + 1)*\coslen}) -- cycle;
+	\node[anchor=center] at ({0.5*\base},{( 0.5 + \level ) * \coslen }) {Arbeitsspeicher};
+	\def \level {3};
+	\draw[line width=0.5pt, fill=myOrange] ({\level * \sinlen},{\level * \coslen}) -- ({\base - \level * \sinlen},{\level * \coslen}) -- ({\base - (\level +1) * \sinlen},{(\level + 1)*\coslen}) -- ({(\level + 1)*\sinlen},{(\level + 1)*\coslen}) -- cycle;
+	\node[anchor=center] at ({0.5*\base},{( 0.5 + \level ) * \coslen }) {Level-2 Cache};
+	\def \level {4};
+	\draw[line width=0.5pt, fill=myOrange] ({\level * \sinlen},{\level * \coslen}) -- ({\base - \level * \sinlen},{\level * \coslen}) -- ({\base - (\level +1) * \sinlen},{(\level + 1)*\coslen}) -- ({(\level + 1)*\sinlen},{(\level + 1)*\coslen}) -- cycle;
+	\node[anchor=center] at ({0.5*\base},{( 0.33 + \level ) * \coslen }) {Level-1 Cache};
+	\def \level {5};
+	\draw[line width=0.5pt, fill=myOrange] ({\level * \sinlen},{\level * \coslen}) -- ({\base - \level * \sinlen},{\level * \coslen}) -- ({\base - (\level +1.7) * \sinlen},{(\level + 1.7)*\coslen}) -- cycle;
+	\node[anchor=center] at ({0.5*\base},{( 0.75 + \level ) * \coslen }) {CPU-};
+	\node[anchor=center] at ({0.5*\base},{( 0.25 + \level ) * \coslen }) {Register};
+	
+
+	\draw[->, line width=1pt, line cap=round] (-1.5,0)           -- node[fill=white, anchor=mid, text=black, rotate=90]{Preis pro Byte} ++(0,{6.7*\coslen});
+	\draw[->, line width=1pt, line cap=round] (-0.75,0)          -- node[fill=white, anchor=mid, text=black, rotate=90]{Datendurchsatz} ++(0,{6.7*\coslen});
+	\draw[<-, line width=1pt, line cap=round] ({\base + 0.75},0) -- node[fill=white, anchor=mid, text=black, rotate=90]{Kapazität} ++(0,{6.7*\coslen});
+	\draw[<-, line width=1pt, line cap=round] ({\base + 1.5},0)  -- node[fill=white, anchor=mid, text=black, rotate=90]{Zugriffszeit} ++(0,{6.7*\coslen});
+
+
+	\draw[line width=0.33pt, fill=myOrange] (-3.25,-0.75) rectangle ++(0.66,0.25);
+	\node[anchor=base west, yshift=0.25mm] at (-2.5,-0.75) {\footnotesize Hardware-Verwaltet};
+
+	\draw[line width=0.33pt, fill=myBlue] (0.75,-0.75) rectangle ++(0.66,0.25);
+	\node[anchor=base west, yshift=0.25mm] at (1.5,-0.75) {\footnotesize Software-Verwaltet (fest)};
+
+	\draw[line width=0.33pt, fill=myGreen] (5.5,-0.75) rectangle ++(0.66,0.25);
+	\node[anchor=base west, yshift=0.25mm] at (6.25,-0.75) {\footnotesize Software-Verwaltet (wechselbar)};
+\end{tikzpicture}
+

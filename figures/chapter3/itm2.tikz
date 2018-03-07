@@ -1,0 +1,14 @@
+\begin{tikzpicture}\titleFont
+	\draw (-0.25,-0.25) rectangle (4,4.5);
+	\draw[fill=myRed]   (0,3.75) rectangle ++(3.75,0.5) node[pos=0.5] {\large CPU-Register};
+	\draw[fill=myRed]   (0,3)    rectangle ++(3.75,0.5) node[pos=0.5] {\large CPU-Cache};
+	\draw[fill=myRed]   (0,2.25) rectangle ++(3.75,0.5) node[pos=0.5] {\large Arbeitsspeicher};
+	\draw[fill=myGreen] (0,1.5)  rectangle ++(3.75,0.5) node[pos=0.5] {\large ITM-NAND};
+	\draw[fill=myRed]   (0,0.75) rectangle ++(3.75,0.5) node[pos=0.5] {\large Festplatten-Cache};
+	\draw[fill=myGreen] (0,0)    rectangle ++(3.75,0.5) node[pos=0.5] {\large Festplatte};
+
+	\draw[fill=myGreen]   (4.5,-0.15) rectangle ++(0.66,0.2);
+	\node[anchor=west] at (5.25,-0.05) {\footnotesize nicht-flüchtiger Speicher};
+	\draw[fill=myRed]   (4.5,0.25) rectangle ++(0.66,0.2);
+	\node[anchor=west] at (5.25,0.35) {\footnotesize flüchtiger Speicher};
+\end{tikzpicture}

@@ -1,0 +1,8 @@
+/* Cache block metadata structure */
+struct cacheblock {
+	spinlock_t lock;		/*  4 Byte */
+	sector_t block;			/*  8 Byte */
+	unsigned short state;	/*  2 Byte */
+	unsigned long counter;	/*  8 Byte */
+	struct bio_list bios;	/* 16 Byte */
+};

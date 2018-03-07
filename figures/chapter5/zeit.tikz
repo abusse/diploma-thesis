@@ -1,0 +1,288 @@
+\begin{tikzpicture}[node distance=1.33cm]\titleFont
+	\begin{scope}[shift={(0,0)}]
+		\draw[<-, line width=1pt] (0.5,1) -- ++(0,0.45);
+		\node[anchor=east] at (-0.1,0.75) {$t=0$};
+		\node[anchor=east] at (-0.1,0.25) {$r=2$};
+
+		\newarray\numbers
+		\readarray{numbers}{9 & 5 & 3 & 2 &
+							4 & 1 & 0 & 1}
+		\dataheight=4
+
+		\draw[fill=myGreen] (0,0) rectangle ++(2,0.5);
+		\draw[fill=myOtherYellow] (0,0.5) rectangle ++(2,0.5);
+
+		\foreach \x in {1,2,3,4}{
+			\foreach \y in {1,2}{
+				\pgfmathtruncatemacro{\xt}{\x}
+				\pgfmathtruncatemacro{\yt}{\y}
+				\checknumbers(\yt,\xt)
+				\trimspace\cachedata
+				\draw[line width=0.1pt] (-0.5+\x/2,1-\y/2) rectangle ++(0.5,0.5) node[pos=0.5] {\large \cachedata};
+			}
+		}
+	\end{scope}
+
+	\begin{scope}[shift={(3.75,0)}]
+		\draw[<-, line width=1pt] (0.5,1) -- ++(0,0.45);
+		\node[anchor=east] at (-0.1,0.75) {$t=1$};
+		\node[anchor=east] at (-0.1,0.25) {$r=7$};
+
+		\newarray\numbers
+		\readarray{numbers}{9 & 5 & 3 & 2 &
+							4 & 1 & 0 & \textbf{2}}
+		\dataheight=4
+
+		\draw[fill=myGreen] (0,0) rectangle ++(2,0.5);
+		\draw[fill=myOtherYellow] (0,0.5) rectangle ++(2,0.5);
+
+		\foreach \x in {1,2,3,4}{
+			\foreach \y in {1,2}{
+				\pgfmathtruncatemacro{\xt}{\x}
+				\pgfmathtruncatemacro{\yt}{\y}
+				\checknumbers(\yt,\xt)
+				\trimspace\cachedata
+				\draw[line width=0.1pt] (-0.5+\x/2,1-\y/2) rectangle ++(0.5,0.5) node[pos=0.5] {\large \cachedata};
+			}
+		}
+	\end{scope}
+
+	\begin{scope}[shift={(7.5,0)}]
+		\draw[<-, line width=1pt] (1.5,1) -- ++(0,0.45);
+		\node[anchor=east] at (-0.1,0.75) {$t=2$};
+		\node[anchor=east] at (-0.1,0.25) {$r=9$};
+
+		\newarray\numbers
+		\readarray{numbers}{9 & 5 & \textbf{7} & 2 &
+							4 & \textbf{0} & \textbf{2} & 2}
+		\dataheight=4
+
+		\draw[fill=myGreen] (0,0) rectangle ++(2,0.5);
+		\draw[fill=myOtherYellow] (0,0.5) rectangle ++(2,0.5);
+
+		\foreach \x in {1,2,3,4}{
+			\foreach \y in {1,2}{
+				\pgfmathtruncatemacro{\xt}{\x}
+				\pgfmathtruncatemacro{\yt}{\y}
+				\checknumbers(\yt,\xt)
+				\trimspace\cachedata
+				\draw[line width=0.1pt] (-0.5+\x/2,1-\y/2) rectangle ++(0.5,0.5) node[pos=0.5] {\large \cachedata};
+			}
+		}
+	\end{scope}
+
+	\begin{scope}[shift={(11.25,0)}]
+		\draw[<-, line width=1pt] (1.5,1) -- ++(0,0.45);
+		\node[anchor=east] at (-0.1,0.75) {$t=2$};
+		\node[anchor=east] at (-0.1,0.25) {$r=1$};
+
+		\newarray\numbers
+		\readarray{numbers}{9 & 5 & 7 & 2 &
+							4 & 0 & 2 & 2}
+		\dataheight=4
+
+		\draw[fill=myGreen] (0,0) rectangle ++(2,0.5);
+		\draw[fill=myOtherYellow] (0,0.5) rectangle ++(2,0.5);
+
+		\foreach \x in {1,2,3,4}{
+			\foreach \y in {1,2}{
+				\pgfmathtruncatemacro{\xt}{\x}
+				\pgfmathtruncatemacro{\yt}{\y}
+				\checknumbers(\yt,\xt)
+				\trimspace\cachedata
+				\draw[line width=0.1pt] (-0.5+\x/2,1-\y/2) rectangle ++(0.5,0.5) node[pos=0.5] {\large \cachedata};
+			}
+		}
+	\end{scope}
+
+	\begin{scope}[shift={(0,-2)}]
+		\draw[<-, line width=1pt] (1,1) -- ++(0,0.45);
+		\node[anchor=east] at (-0.1,0.75) {$t=3$};
+		\node[anchor=east] at (-0.1,0.25) {$r=2$};
+
+		\newarray\numbers
+		\readarray{numbers}{9 & \textbf{1} & 7 & 2 &
+							\textbf{3} & \textbf{2} & 2 & \textbf{1}}
+		\dataheight=4
+
+		\draw[fill=myGreen] (0,0) rectangle ++(2,0.5);
+		\draw[fill=myOtherYellow] (0,0.5) rectangle ++(2,0.5);
+
+		\foreach \x in {1,2,3,4}{
+			\foreach \y in {1,2}{
+				\pgfmathtruncatemacro{\xt}{\x}
+				\pgfmathtruncatemacro{\yt}{\y}
+				\checknumbers(\yt,\xt)
+				\trimspace\cachedata
+				\draw[line width=0.1pt] (-0.5+\x/2,1-\y/2) rectangle ++(0.5,0.5) node[pos=0.5] {\large \cachedata};
+			}
+		}
+	\end{scope}
+
+	\begin{scope}[shift={(3.75,-2)}]
+		\draw[<-, line width=1pt] (1,1) -- ++(0,0.45);
+		\node[anchor=east] at (-0.1,0.75) {$t=3$};
+		\node[anchor=east] at (-0.1,0.25) {$r=7$};
+
+		\newarray\numbers
+		\readarray{numbers}{9 & 1 & 7 & 2 &
+							3 & 2 & 2 & \textbf{2}}
+		\dataheight=4
+
+		\draw[fill=myGreen] (0,0) rectangle ++(2,0.5);
+		\draw[fill=myOtherYellow] (0,0.5) rectangle ++(2,0.5);
+
+		\foreach \x in {1,2,3,4}{
+			\foreach \y in {1,2}{
+				\pgfmathtruncatemacro{\xt}{\x}
+				\pgfmathtruncatemacro{\yt}{\y}
+				\checknumbers(\yt,\xt)
+				\trimspace\cachedata
+				\draw[line width=0.1pt] (-0.5+\x/2,1-\y/2) rectangle ++(0.5,0.5) node[pos=0.5] {\large \cachedata};
+			}
+		}
+	\end{scope}
+
+	\begin{scope}[shift={(7.5,-2)}]
+		\draw[<-, line width=1pt] (1,1) -- ++(0,0.45);
+		\node[anchor=east] at (-0.1,0.75) {$t=4$};
+		\node[anchor=east] at (-0.1,0.25) {$r=8$};
+
+		\newarray\numbers
+		\readarray{numbers}{9 & 1 & 7 & 2 &
+							3 & 2 & \textbf{3} & 2}
+		\dataheight=4
+
+		\draw[fill=myGreen] (0,0) rectangle ++(2,0.5);
+		\draw[fill=myOtherYellow] (0,0.5) rectangle ++(2,0.5);
+
+		\foreach \x in {1,2,3,4}{
+			\foreach \y in {1,2}{
+				\pgfmathtruncatemacro{\xt}{\x}
+				\pgfmathtruncatemacro{\yt}{\y}
+				\checknumbers(\yt,\xt)
+				\trimspace\cachedata
+				\draw[line width=0.1pt] (-0.5+\x/2,1-\y/2) rectangle ++(0.5,0.5) node[pos=0.5] {\large \cachedata};
+			}
+		}
+	\end{scope}
+
+	\begin{scope}[shift={(11.25,-2)}]
+		\draw[<-, line width=1pt] (1,1) -- ++(0,0.45);
+		\node[anchor=east] at (-0.1,0.75) {$t=5$};
+		\node[anchor=east] at (-0.1,0.25) {$r=9$};
+
+		\newarray\numbers
+		\readarray{numbers}{9 & 1 & 7 & 2 &
+							\textbf{2} & \textbf{1} & \textbf{2} & \textbf{1}}
+		\dataheight=4
+
+		\draw[fill=myGreen] (0,0) rectangle ++(2,0.5);
+		\draw[fill=myOtherYellow] (0,0.5) rectangle ++(2,0.5);
+
+		\foreach \x in {1,2,3,4}{
+			\foreach \y in {1,2}{
+				\pgfmathtruncatemacro{\xt}{\x}
+				\pgfmathtruncatemacro{\yt}{\y}
+				\checknumbers(\yt,\xt)
+				\trimspace\cachedata
+				\draw[line width=0.1pt] (-0.5+\x/2,1-\y/2) rectangle ++(0.5,0.5) node[pos=0.5] {\large \cachedata};
+			}
+		}
+	\end{scope}
+
+	\begin{scope}[shift={(0,-4)}]
+		\draw[<-, line width=1pt] (1,1) -- ++(0,0.45);
+		\node[anchor=east] at (-0.1,0.75) {$t=6$};
+		\node[anchor=east] at (-0.1,0.25) {$r=8$};
+
+		\newarray\numbers
+		\readarray{numbers}{9 & 1 & 7 & 2 &
+							\textbf{3} & 1 & 2 & 1}
+		\dataheight=4
+
+		\draw[fill=myGreen] (0,0) rectangle ++(2,0.5);
+		\draw[fill=myOtherYellow] (0,0.5) rectangle ++(2,0.5);
+
+		\foreach \x in {1,2,3,4}{
+			\foreach \y in {1,2}{
+				\pgfmathtruncatemacro{\xt}{\x}
+				\pgfmathtruncatemacro{\yt}{\y}
+				\checknumbers(\yt,\xt)
+				\trimspace\cachedata
+				\draw[line width=0.1pt] (-0.5+\x/2,1-\y/2) rectangle ++(0.5,0.5) node[pos=0.5] {\large \cachedata};
+			}
+		}
+	\end{scope}
+
+	\begin{scope}[shift={(3.75,-4)}]
+		\draw[<-, line width=1pt] (1,1) -- ++(0,0.45);
+		\node[anchor=east] at (-0.1,0.75) {$t=7$};
+		\node[anchor=east] at (-0.1,0.25) {$r=8$};
+
+		\newarray\numbers
+		\readarray{numbers}{9 & 1 & 7 & 2 &
+							\textbf{2} & \textbf{0} & \textbf{1} & \textbf{0}}
+		\dataheight=4
+
+		\draw[fill=myGreen] (0,0) rectangle ++(2,0.5);
+		\draw[fill=myOtherYellow] (0,0.5) rectangle ++(2,0.5);
+
+		\foreach \x in {1,2,3,4}{
+			\foreach \y in {1,2}{
+				\pgfmathtruncatemacro{\xt}{\x}
+				\pgfmathtruncatemacro{\yt}{\y}
+				\checknumbers(\yt,\xt)
+				\trimspace\cachedata
+				\draw[line width=0.1pt] (-0.5+\x/2,1-\y/2) rectangle ++(0.5,0.5) node[pos=0.5] {\large \cachedata};
+			}
+		}
+	\end{scope}
+
+	\begin{scope}[shift={(7.5,-4)}]
+		\draw[<-, line width=1pt] (0,1) -- ++(0,0.45);
+		\node[anchor=east] at (-0.1,0.75) {$t=8$};
+		\node[anchor=east] at (-0.1,0.25) {$r=1$};
+
+		\newarray\numbers
+		\readarray{numbers}{9 & 1 & 7 & \textbf{8} &
+							2 & 0 & \textbf{0} & \textbf{2}}
+		\dataheight=4
+
+		\draw[fill=myGreen] (0,0) rectangle ++(2,0.5);
+		\draw[fill=myOtherYellow] (0,0.5) rectangle ++(2,0.5);
+
+		\foreach \x in {1,2,3,4}{
+			\foreach \y in {1,2}{
+				\pgfmathtruncatemacro{\xt}{\x}
+				\pgfmathtruncatemacro{\yt}{\y}
+				\checknumbers(\yt,\xt)
+				\trimspace\cachedata
+				\draw[line width=0.1pt] (-0.5+\x/2,1-\y/2) rectangle ++(0.5,0.5) node[pos=0.5] {\large \cachedata};
+			}
+		}
+	\end{scope}
+
+	\begin{scope}[shift={(11.25,-4)}]
+		\draw[<-, line width=1pt] (0,1) -- ++(0,0.45);
+		\node[anchor=east] at (-0.1,0.5) {$t=9$};
+
+		\newarray\numbers
+		\readarray{numbers}{9 & 1 & 7 & 8 &
+							2 & \textbf{1} & 0 & 2}
+		\dataheight=4
+
+		\draw[fill=myGreen] (0,0) rectangle ++(2,0.5);
+		\draw[fill=myOtherYellow] (0,0.5) rectangle ++(2,0.5);
+
+		\foreach \x in {1,2,3,4}{
+			\foreach \y in {1,2}{
+				\pgfmathtruncatemacro{\xt}{\x}
+				\pgfmathtruncatemacro{\yt}{\y}
+				\checknumbers(\yt,\xt)
+				\trimspace\cachedata
+				\draw[line width=0.1pt] (-0.5+\x/2,1-\y/2) rectangle ++(0.5,0.5) node[pos=0.5] {\large \cachedata};
+			}
+		}
+	\end{scope}
+\end{tikzpicture}

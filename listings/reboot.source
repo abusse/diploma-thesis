@@ -1,0 +1,19 @@
+static int cache_notify_reboot(struct notifier_block *this, unsigned long code, void *x){
+	struct list_head *tmp;
+
+	if ((code == SYS_DOWN) || (code == SYS_HALT) || (code == SYS_POWER_OFF)) {
+		DMINFO("dumping all metadata");
+
+		/* iterate through all remaining caches and destroy them */
+		list_for_each(tmp, &_caches){
+			dump_metadata(list_entry(tmp, struct cache_c, list));
+		}
+	}
+	return NOTIFY_DONE;
+}
+
+static struct notifier_block cache_notifier = {
+	.notifier_call	= cache_notify_reboot,
+	.next		= NULL,
+	.priority	= INT_MAX,
+};

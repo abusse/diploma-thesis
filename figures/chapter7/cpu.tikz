@@ -1,0 +1,37 @@
+\begin{tikzpicture}\titleFont
+	\begin{axis}[legend columns=2,
+				 legend style={at={(0.5,-0.15)},anchor=north, draw=none, font=\small},
+				 legend cell align={left},
+				 xmin=2,
+				 xmax=235929,
+				 ymin=0,
+				 ymax=100,
+				 xmode=log,
+				 width = \textwidth,
+				 height = 0.6\textwidth,
+				 xlabel={\textbf{Assoziativit\"at}}, 
+				 ylabel={\textbf{Laufzeit in Sekunden}},
+				 cycle list name=Dark2,
+				 xtick={2,8,32,128,512,2048,8192,32768,131072},
+				 xticklabels={2,8,32,128,512,2048,8192,32768,131072},
+				 ytick={0,10,20,30,40,50,60,70,80,90,100},
+				 yticklabels={0,10,20,30,40,50,60,70,80,90,100},
+				 xmajorgrids=true,
+				 thick,
+				 reverse legend
+				 ]
+
+		\addplot+[smooth, line width=2pt, color=black!70] table [col sep=comma,x={associativity},y expr=\thisrow{s16i16}*0.02, skip coords between index={11}{13}]{figures/chapter7/time16.dat};
+		\addlegendentry{Cache ($m\!=\!16$, $s\!=\!16$, $i\!=\!16$)}
+		\addplot+[smooth, line width=2pt, color=black!55] table [col sep=comma,x={associativity},y expr=\thisrow{s16i1}*0.02, skip coords between index={11}{13}]{figures/chapter7/time16.dat};
+		\addlegendentry{Cache ($m\!=\!16$, $s\!=\!16$, $i\!=\!1$)~~}
+		\addplot+[smooth, line width=2pt, color=black!40] table [col sep=comma,x={associativity},y expr=\thisrow{s1i16}*0.02, skip coords between index={11}{13}]{figures/chapter7/time16.dat};
+		\addlegendentry{Cache ($m\!=\!16$, $s\!=\!1$, $i\!=\!=16$)}	
+		\addplot+[smooth, line width=2pt, color=black!25] table [col sep=comma,x={associativity},y expr=\thisrow{s1i1}*0.02, skip coords between index={11}{13}]{figures/chapter7/time16.dat};
+		\addlegendentry{Cache ($m\!=\!16$, $s\!=\!1$, $i\!=\!1$)}
+		\addlegendimage{empty legend}
+    	\addlegendentry{}
+		\addplot+[smooth, line width=2pt, color=red!75!black] table [col sep=comma,x={associativity},y={load}]{figures/chapter7/time16.dat};
+		\addlegendentry{Prozessorlast}
+	\end{axis}
+\end{tikzpicture}

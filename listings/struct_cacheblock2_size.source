@@ -1,0 +1,7 @@
+/* Cache block metadata structure */
+struct cacheblock {
+	sector_t block	 : 56;	/* 56 Bit */
+	sector_t access	 :  4;	/*  4 Bit */
+	sector_t state	 :  3;	/*  3 Bit */
+	sector_t visited :  1;	/*  1 Bit */
+};

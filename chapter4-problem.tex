@@ -1,0 +1,76 @@
+\chapter{Problemstellung}
+\label{chap4}
+
+Nach der kurzen Einführung im ersten Kapitel in die in dieser Arbeit betrachtete Problematik soll im nun folgenden Kapitel die Problemstellung konkretisiert
+werden. Dies geschieht auf Grundlage der technischen Gegebenheiten, die in Kapitel \ref{chap2} erläutert wurden, und den bereits existierenden Arbeiten, welche
+in Kapitel \ref{chap3} vorgestellt wurden.
+
+In der Einleitung wurde bereits angedeutet, dass zwischen Festplatten und \acp{SSD} ein signifikanter Leistungsunterschied bezüglich der Zugriffszeit besteht.
+Die Ursachen hierfür wurden in Kaptitel \ref{chap2} ausführlich dargestellt. Somit wäre es
+zwar wünschenswert auf Grund der Leistungsvorteile der \acp{SSD} gegenüber von Festplatten, diese komplett durch \acp{SSD} zu ersetzten. Es würde weiterhin
+den Vorteil mit sich bringen, dass sämtliche Software komplett auf \acp{SSD} umgestellt werden könnte. Dies würde sowohl die Leistung der \acp{SSD} ausreizen, da auf
+die spezifischen Eigenschaften wie z.B. das \texttt{TRIM}-Kommando eingegangen werden kann, und Entwicklungskosten gespart werden, da nicht für zwei
+unterschiedliche Gerätetypen die Software optimiert werden müsste. Aus den preislichen Gegebenheiten, die ebenfalls bereits in Kapitel \ref{chap1} angesprochen und durch die
+Tabelle \ref{chap1:preise} verdeutlicht wurden, ist die nahezu vollständige Verdrängung der herkömmlichen Festplatten durch \acp{SSD} in naher Zukunft aber
+nicht zu erwarten.
+
+Aus diesem Grund sollte eine Alternative gefunden werden, die besseren Leistungseigenschaften eines \ac{SSD}s effektiv zu nutzen. Hierbei sollten zunächst die
+Kostenunterschiede beachtet werden. Daher sollte eine Lösung auch mit vergleichweise wenig \ac{SSD}-Speicher auskommen und trotzdem eine messbare
+Leistungssteigerung erbringen. Wie einige der Arbeiten aus Abschnitt \ref{chap3:readyboost} und \ref{chap3:itm} diskutieren, scheint die in der Einleitung in
+Abbildung \ref{chap1:mem3} gezeigt Architektur ein Lösungsansatz hierfür zu sein. Dabei wird das \ac{SSD} als Cache genutzt. Dies hat zum einen den Vorteil, dass
+der Cache als zusätzliche Schicht in die Speicherhierarchie eingefügt werden kann. Dadurch ist der Anpassungsaufwand an die darüber und darunter liegenden Ebenen
+sehr gering. Zum anderen ist der Cache sehr flexibel in Bezug auf den zur Verfügung stehenden Speicher. Aus diesem Grund soll die Nutzung von \acp{SSD} als Cache
+für herkömmliche Festplatten in dieser Arbeit detailliert betrachtet werden.
+
+Im Mittelpunkt dieser Arbeit soll der Entwurf, die Implementierung und die Evaluierung eines Linux-Kernelmoduls stehen, welches eine Speicherhierarchie
+ermöglicht, wie sie in Abbildung \ref{chap1:mem3} zu sehen ist. Bei der Umsetzung müssen zunächst die momentanen technischen Rahmenbedingungen beachtet werden.
+Zur Zeit gebräuchliche Festplatten haben eine Kapazität von bis zu zwei Terabyte. Aus diesem Grund sollte der Cache mindestens diese Größe unterstützen, wobei
+eine Größe um zehn Terabyte wünschenswert ist, um in den nächsten zwei Jahren nicht an die Grenze der Möglichkeiten des Caches zu stoßen. Ähnliches gilt für die
+Größe des verwendeten \ac{SSD}. Ausgehend von der Vermutung, dass das Cachegerät wesentlich kleiner ist als die Festplatte, da es ansonsten als alleiniges
+Speichergerät verwendet werden könnte, sollte der Cache eine Größe von bis zu einem Terabyte beim Cachegerät unterstützen.
+
+Des Weiteren muss die Entscheidung getroffen werden, ob der Cache block- oder dateisystemorientiert arbeiten soll. Diese Frage ist grundlegender Natur, da auf
+der Dateisystemebene wesentlich mehr Informationen über Daten zur Verfügung stehen als auf der Blockebene. Dieses beeinflusst nicht nur den Aufbau des
+Kernelmoduls an sich sondern auch die Möglichkeiten bezüglich der Cachingstrategien. Ein weiterer Punkt, den es zu beachten gilt, ist die Portabilität. Ein
+blockorientierter Cache könnte mit einem beliebigen Dateisystem genutzt werden. Ein dateisystemorientierter Cache wäre an das zugrunde liegende Dateisystem
+gebunden und müsste für jedes neue Dateisystem spezifisch implementiert werden. Unter anderem auf Grund dieser Tatsache soll der Cache blockorientiert entwickelt
+werden. Diese Entscheidung wird dadurch unterstützt, dass mit dem in Abschnitt \ref{chap3:zfs} vorgestellten Arbeiten von \textcite{zfs1,zfs2} untersuchten
+ZFS bereits eine effiziente Implementierung eine Caches auf Dateisystemebene existiert.
+
+Der Cache soll weiterhin die Randbedingung erfüllen, möglichst ressourcenschonend zu arbeiten. Die Nutzung eines Caches ist nur sinnvoll, wenn durch die Nutzung
+andere Teile des Systems nicht massiv  verlangsamt werden. Ein besonderes Augenmerk liegt hierbei auf dem Speicherverbrauch und der Prozessorleistung. Der Cache
+wird auf Grund von Erwägungen bezüglich der Geschwindigkeit große Teile seiner Verwaltungsdaten im Arbeitsspeicher halten müssen. Dadurch steht weniger Speicher
+für die Nutzung durch Programme bzw. das Cachen von Daten zur Verfügung. Sollte der Cache sehr viel Speicher für die Metadaten benötigen, könnte es zu massiven
+Leistungseinbußen kommen. Aus diesem Grund soll der zu implementierende Cache möglichst geringen Speicherverbrauch in Abhängigkeit von der Cachegröße aufweisen.
+Ähnliches gilt für die Nutzung des Prozessors. Auch hier sollte darauf geachtet werden, dass die Prozessorlast durch den Cache möglichst gering ist. Sollte dies
+nicht der Fall sein, würde es in einem Multitasking-System zu einer Verlangsamung anderer Prozesse kommen. Dies ist nicht erwünscht.
+
+Neben dem ressourcenschonenden Arbeiten sollte der Cache weiterhin einfach zu managen sein. Konkret heißt dies, dass Cachegeräte jederzeit in ein System
+eingefügt und entfernt werden können ohne größeres Hinzutun des Nutzers. Somit sollte der Cache zunächst mit einigen wenigen, wenn nicht sogar nur einem
+Kommando aufgebaut werden können. Weiterhin sollte das Entfernen des Cachegeräts nicht zu einem Ausfall des Systems führen und auch kein Eingreifen des Benutzers
+erfordern.
+
+Schließlich sollte es auch möglich sein, von dem gecachten Gerät zu booten. Auch hierbei sollte der Cache möglichst einfach in ein bestehendes System eingefügt
+werden können.
+
+Es lassen sich somit folgende Anforderungen an den Cache feststellen:
+
+\begin{itemize}
+  \item Blockorientiert
+  \item Ressourcenschonend
+  \item Einfaches Management
+  \item Bootfähig
+\end{itemize}
+
+Neben der Umsetzung der technischen Eigenschaften soll ein geeigneter Cache-Algorithmus gefunden werden, der zum einen gute Ergebnisse bezüglich der Leistung
+verspricht, aber auch durch entsprechende Parameter bezüglich der obigen Kriterien optimiert werden kann. Hierbei sollen unter anderem die Ergebnisse von 
+\textcite{cache1} beachtet werden, welcher in Abschnitt \ref{chap3:ersetzen} vorgestellt wurden.
+
+Nach der erfolgten Beispielimplementierung soll diese auf die Erfüllung der soeben genannten Anforderungen geprüft werden. Dies soll anhand zweier Szenarien
+stattfinden. Zum einen soll ein reales System betrachtet werden. Dabei sollen die Unterschiede bei Leistung und Gerätenutzung in Abhängigkeit vom genutzten
+Systemspeicher genauer betrachtet werden. Hierbei soll eine durch ein \ac{SSD} gecachte Festplatte untersucht werden und mit einer einezlnen Festplatte bzw.
+einem \ac{SSD} verglichen werden. Zum anderen soll ein synthetisches Testszenario, welches ein Desktopsystem simuliert, entworfen werden. Dies soll es
+ermöglichen, in einem vertretbaren Zeitrahmen mehrere Arbeitstage zu simulieren. Des Weiteren soll es den Vergleich verschiedener Massenspeichergeräte unabhängig
+vom genutzten Betriebs- bzw. Dateisystem ermöglichen. Dies soll ein Vergleich des blockbasierten Caches für Linux mit ZFS ermöglicht, welches in der
+Referenzimplementierung nicht für Linux zur Verfügung steht. Es soll die Referenzimplementierung, welche z.B. unter OpenSolaris \cite{solaris} zur Verfügung
+steht, genutzt werden, um schlechte Leistungswerte auf Grund einer mangelhaften Implementierung vorzubeugen.

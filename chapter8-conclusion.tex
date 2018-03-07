@@ -1,0 +1,32 @@
+\chapter{Zusammenfassung und Ausblick}
+\label{chap8}
+
+Zusammenfassend kann konstatiert werden, dass die Erweiterung der Speicherhierarchie, wie sie in der Einleitung dargestellt wurde, realisierbar und sinnvoll ist.
+Es wurde gezeigt, dass eine Implementierung auf Blockebene mindestens dieselbe Leistung erbringt wie eine Implementierung auf Dateisystemebene. Auf Grund der
+universelleren Einsetzbarkeit sollte die blockbasierte Implementierung vorgezogen werden und die Entwicklung weiter vorangetrieben werden.
+
+Auf systemspezifischer Ebene des Linux Betriebssystems hat sich die Nutzung des \ac{DM}-Framework als solide und effizient herausgestellt. Des Weiteren wurde
+gezeigt, dass es prinzipiell möglich ist, von einem in dieser Arbeit entworfenen Cache zu booten. Da diese Funktionalität jedoch eine Kernelerweiterung nutzt,
+von der momentan nicht klar ist, ob sie in den offiziellen Kernel einfließt, ist zur Zeit auch unklar, ob der beschrittene Weg der richtige ist. Sollte die
+Erweiterung in den Kernel aufgenommen werden, ist diese Frage ganz klar mit ja zu beantworten, sollte sie jedoch nicht aufgenommen werden, sollte auch der Weg
+über eine moduleigene Lösung betrachtet werden. Ähnliches gilt für das in Abschnitt \ref{chap6:boot} angesprochene Problem beim Neustart. Auch hier sollte
+zunächst versucht werden, eine einheitliche Lösung durch Erweiterung des \ac{DM}-Frameworks zu finden. Sollte dies scheitern, muss auch hier der Ansatz der
+modulinternen Lösung weiterverfolgt werden.
+
+Bei der weiteren Erforschung des Themenbereichs ist es notwendig eine Reihe von Problemen auf der Seite der Implementierung zu lösen. Zunächst gilt es
+die Synchronisationsprobleme der Write-Back- und Write-Hybrid-Strategie zu betrachten. Hierfür bedarf es einer detaillierten Analyse des bestehenden Codes in
+Hinblick auf Konkurrenzsituationen und mögliche Deadlock-Gefahren. Nachdem dieses Problem gelöst ist, müssen die Leistungsdefizite des Write-Back-Caches
+beseitigt werden. Dies könnte in der Art geschehen, dass in die \texttt{map}-Funktion ein Filter eingefügt wird, der sequenzielle Schreibzugriffe erkennt und
+entsprechende Anfragen direkt an das Quellgerät weiterleitet. Die Implementierung des Filters wird dabei vor die Herausforderung gestellt, dass die
+\texttt{map}-Funktion nur Anfragen in Größe der Cacheblockgröße erhält. Darum ist es problematisch die Gesamtgröße einer Anfrage zu bestimmen.
+
+Nach der erfolgreichen Implementierung des Write-Back-Caches muss unbedingt die Sicherung der Cachemetadaten verbessert werden. Bei einem Write-Through-Cache
+kann beim Verlust der Metadaten der Cache problemlos neu aufgebaut werden. Beim Write-Back- und Write-Hybrid-Cache ist dies nicht möglich, da eine Menge
+gültiger Daten exklusiv auf dem Cachegerät vorliegen. Demzufolge ist es schwierig die Metainformationen über diese Daten nicht zu verlieren. Die momentane
+Implementierung nimmt auf diesen Sachverhalt keinerlei Rücksicht, so dass hierbei eine weitere Analyse notwendig ist.
+
+Nach der Behebung der Implementierungsdefizite sollte die Leistungsmessung verbessert werden. Es wäre wünschenswert ähnlich wie in den Arbeiten aus Kapitel
+\ref{chap3} die Leistungsbewertung anhand realer Zugriffe durchzuführen. Hierfür müsten zunächst Blockgerätzugriffe auf Produktivsystemen aufgezeichnet werden.
+Anschließend sollten diese auf den implementierten Cache angewendet werden. Da gerade Letzteres sehr zeitaufwendig ist, kann die in dieser Arbeit verwendete
+Messungsmethode als Vorauswahl für vielversprechende Konfigurationen genutzt werden. Diese können dann in einer länger andauernden Testreihe mit den
+aufgezeichneten Realdaten evaluiert werden.

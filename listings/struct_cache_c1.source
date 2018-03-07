@@ -1,0 +1,34 @@
+/* Cache context */
+struct cache_c {
+	struct dm_dev *src_dev;		/* Source device */
+	struct dm_dev *cache_dev;	/* Cache device */
+	struct dm_kcopyd_client *kcp_client; /* Kcopyd client for writing back data */
+
+	struct cacheblock *cache;	/* Hash table for cache blocks */
+	sector_t size;				/* Cache size */
+	unsigned int bits;			/* Cache size in bits */
+	unsigned int assoc;			/* Cache associativity */
+	unsigned int block_size;	/* Cache block size */
+	unsigned int block_shift;	/* Cache block size in bits */
+	unsigned int block_mask;	/* Cache block mask */
+	unsigned int consecutive_shift;	/* Consecutive blocks size in bits */
+	unsigned long counter;		/* Logical timestamp of last access */
+	unsigned int write_policy;	/* Cache write policy */
+	sector_t dirty_blocks;		/* Number of dirty blocks */
+
+	spinlock_t lock;			/* Lock to protect page allocation/deallocation */
+	struct page_list *pages;	/* Pages for I/O */
+	unsigned int nr_pages;		/* Number of pages */
+	unsigned int nr_free_pages;	/* Number of free pages */
+	wait_queue_head_t destroyq;	/* Wait queue for I/O completion */
+	atomic_t nr_jobs;			/* Number of I/O jobs */
+	struct dm_io_client *io_client;   /* Client memory pool*/
+
+	/* Stats */
+	unsigned long reads;		/* Number of reads */
+	unsigned long writes;		/* Number of writes */
+	unsigned long cache_hits;	/* Number of cache hits */
+	unsigned long replace;		/* Number of cache replacements */
+	unsigned long writeback;	/* Number of replaced dirty blocks */
+	unsigned long dirty;		/* Number of submitted dirty blocks */
+};

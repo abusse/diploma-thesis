@@ -1,0 +1,19 @@
+\begin{tikzpicture}[node distance=1cm]\titleFont
+	\node[draw, align=center, fill=myGreen, minimum width=3cm]										(app)  {Applikation};
+	\node[draw, align=center, fill=myBlue, minimum width=3cm, below = of app]						(file) {Dateisystem};
+	\node[draw, align=center, fill=myOtherYellow, minimum width=3cm, below = of file]				(dm)   {Device-Mapper\\\textbf{dm}};
+	\node[draw, align=center, fill=myOtherYellow, minimum width=2cm,below = of dm, xshift=-1.5cm]	(sda)  {Festplatte\\\textbf{sda}};
+	\node[draw, align=center, fill=myOtherYellow, minimum width=2cm,below = of dm, xshift=1.5cm]	(sdb)  {Festplatte\\\textbf{sdb}};
+	\node[draw, align=center, fill=myOrange, minimum width=3cm, right = of dm]						(comb) {dm-lincomb};
+
+	\node[align=left, text width=2.9cm, left = of app]  {Anwender-Schicht};
+	\node[align=left, text width=2.9cm, left = of file] {Kern-Schicht};
+
+	\draw[<->, line width=1pt] (app)  -- (file);
+	\draw[<->, line width=1pt] (file) -- (dm);
+	\draw[<->, line width=1pt] (dm)   -- (sda.north);
+	\draw[<->, line width=1pt] (dm)   -- (sdb.north);
+	\draw[<->, line width=1pt] (dm)   -- (comb);
+
+	\draw[dashed, line width=1pt] ($(app)!0.5!(file)$) ++(-5.5,0) -- ++(11.5,0);
+\end{tikzpicture}

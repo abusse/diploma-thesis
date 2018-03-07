@@ -1,0 +1,18 @@
+\begin{tikzpicture}[state/.style={circle, draw, minimum size=2.2cm, line width=0.75pt},
+                    every edge/.append style={line width=1.33pt},
+                    align=center, 
+                    shorten >=1pt,
+                    shorten <=1pt,
+                    node distance=5cm,
+                    on grid,
+                    auto] \titleFont
+    \node[state] (invalid)                                   {Invalid}; 
+    \node[state] (reserved_valid) [below= of invalid]        {Reserved \\ for Valid}; 
+    \node[state] (valid)          [below= of reserved_valid] {Valid}; 
+    \path[->] 
+        (invalid)         edge                                node[rectangle,fill=white,anchor=center, inner sep=4pt]          {Insert Read}  (reserved_valid)
+        (reserved_valid)  edge[bend right=40]                 node[rectangle,fill=white,anchor=center, inner sep=4pt, pos=0.4] {I/O-Callback} (valid)
+        (valid)           edge[bend right=40]                 node[rectangle,fill=white,anchor=center, inner sep=4pt, pos=0.4] {Insert Read}  (reserved_valid)
+        (valid)           edge[out=15, in=-15, looseness=0.8] node[rectangle,fill=white,anchor=center, inner sep=4pt]          {Write}        (invalid);
+    \path[<-] (invalid) edge ++(0,2);
+\end{tikzpicture}

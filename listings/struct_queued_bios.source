@@ -1,0 +1,6 @@
+/* list for queued BIOs waiting for running copy */
+struct queued_bios {
+	struct list_head list;		/* list anchor */
+	struct cacheblock *block;	/* cacheblock the bios belong to */
+	struct bio_list *bios;		/* the bio list */
+};

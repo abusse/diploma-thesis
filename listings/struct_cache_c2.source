@@ -1,0 +1,52 @@
+/* Cache metadata */
+struct cache_c {
+	struct dm_dev *src_dev;			/* Source device */
+	struct dm_dev *cache_dev;		/* Cache device */
+	struct dm_kcopyd_client *kcp_client; /* Kcopyd client for writing back data */
+
+	struct list_head list;			/* List hook for the other dm-cach instances in the system */
+
+	struct cacheblock *cache;		/* Hash table for cache blocks */
+	unsigned int *marker;
+	sector_t size;					/* Cache size */
+	unsigned int bits;				/* Cache size in bits */
+	unsigned int assoc;				/* Cache associativity */
+	unsigned int assoc_bits;		/* Cache associativity in bits */
+	unsigned int assoc_mask; 		/* Cache associativity mask*/
+	unsigned long hash_pattern; 	/* pattern for block hashing */
+	unsigned int sets;     			/* Number of sets */
+	unsigned int block_size;		/* Cache block size */
+	unsigned int block_shift;		/* Cache block size in bits */
+	unsigned int block_mask;		/* Cache block mask */
+	unsigned int consecutive_shift;	/* Consecutive blocks size in bits */
+	unsigned int write_policy;		/* Cache write policy */
+	unsigned int wb_on_dtr;			/* Write back dirty pages on cache destruction */
+	unsigned short age_max;			/* Maximum age for a cacheblock */
+	unsigned short age_default;		/* Default age for a cacheblock */
+	unsigned short increment;		/* Increment at block access*/
+
+	spinlock_t lock;				/* Lock to protect page allocation/deallocation */
+	struct page_list *pages;		/* Pages for I/O */
+	unsigned int nr_pages;			/* Number of pages */
+	unsigned int nr_free_pages;		/* Number of free pages */
+	wait_queue_head_t destroyq;		/* Wait queue for I/O completion */
+	atomic_t nr_jobs;				/* Number of I/O jobs */
+	struct dm_io_client *io_client;	/* Client memory pool*/
+
+	/* queue and lock for delayed BIOs */
+	spinlock_t queue_lock;			/* Lock to protect operations on the bio list */
+	struct queued_bios queue;		/* List of pending bios */
+
+	/* Stats */
+	unsigned long reads;			/* Number of reads */
+	unsigned long writes;			/* Number of writes */
+	unsigned long cache_hits;		/* Number of cache hits */
+	unsigned long replace;			/* Number of cache replacements */
+	unsigned long writeback;		/* Number of replaced dirty blocks */
+	unsigned long dirty;			/* Number of submitted dirty blocks */
+
+#if defined(CONFIG_DEBUG_FS)
+	struct dentry *debugfs;			/* Root node for debugfs */
+	struct debugfs_blob_wrapper blob_cache;	/* Blob for cachblock metadata export */
+#endif
+};

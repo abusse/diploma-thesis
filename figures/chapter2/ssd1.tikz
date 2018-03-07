@@ -1,0 +1,193 @@
+\begin{tikzpicture}[0/.style={fill=white},
+    				1/.style={fill=myTeal},
+    				2/.style={fill=myRed},
+    				3/.style={fill=myOrange},
+    				4/.style={pattern=north east lines, pattern color=myOrange, preaction={fill, white}} 
+				   ]\titleFont
+
+	% legend
+	\begin{scope}[shift={(5.9,2.5)}]
+		\draw[dotted, line width=0.66pt] (0,0) rectangle (3.6,2.25);
+
+		\draw[line width=0.1pt, fill=black!33] (0.2,0.2) rectangle ++(0.25,0.25) node[pos=0.5] {\tiny L} node[pos=0.1, anchor=base west, xshift=3mm] {\scriptsize zu löschender Block};
+		\draw[line width=0.1pt, fill=black!33] (0.2,0.6) rectangle ++(0.25,0.25) node[pos=0.5] {\tiny S} node[pos=0.1, anchor=base west, xshift=3mm] {\scriptsize zu schreibender Block};
+		\draw[line width=0.1pt, pattern=north east lines, pattern color=black!33, preaction={fill, white}] (0.2,1.0) rectangle ++(0.25,0.25) node[pos=0.1, anchor=base west, xshift=3mm] {\scriptsize gelöschter Block};
+		\draw[line width=0.1pt, fill=black!33] (0.2,1.4) rectangle ++(0.25,0.25) node[pos=0.1, anchor= base west, xshift=3mm] {\scriptsize belegter Block};
+		\draw[line width=0.1pt, fill=white] (0.2,1.8) rectangle ++(0.25,0.25) node[pos=0.1, anchor=base west, xshift=3mm] {\scriptsize leerer Block};
+	\end{scope}
+
+	% read/write blocks and label
+	\draw[dashed, line width=0.66pt, black!33] (-1.8,-0.5) -- ++(11.33,0);
+	\draw[dashed, line width=0.66pt, black!33] (-1.8,2)    -- ++(11.33,0);
+
+	\node at (-1,3.25) {\footnotesize\titleFontBold\breakC{Lese-/\\Schreib-\\Anfragen}};
+	\node at (-1,0.75) {\footnotesize\titleFontBold Flash};
+	\node at (-1,-1.75){\footnotesize\titleFontBold\breakC{Zwischen-\\speicher}};
+
+	\draw[<-, line width=0.66pt] (0.75,1.5) -- ++(0,2);
+	\draw[<-, line width=0.66pt] (2.75,1.5) -- ++(0,1.5);
+	\draw[<-, line width=0.66pt] (4.75,1.5) -- ++(0,3);
+
+	\draw[line width=0.1pt, fill=myTeal] (0.6,2.5) rectangle ++(0.3,0.3) node[pos=0.5] {\tiny S};
+	\draw[line width=0.1pt, fill=myTeal] (0.6,3)   rectangle ++(0.3,0.3) node[pos=0.5] {\tiny S};
+	\draw[line width=0.1pt, fill=myTeal] (0.6,3.5) rectangle ++(0.3,0.3) node[pos=0.5] {\tiny S};
+
+	\draw[line width=0.1pt, fill=myOrange] (2.6,2.5) rectangle ++(0.3,0.3) node[pos=0.5] {\tiny L};
+	\draw[line width=0.1pt, fill=myOrange] (2.6,3)   rectangle ++(0.3,0.3) node[pos=0.5] {\tiny L};
+
+	\draw[line width=0.1pt, fill=myRed] (4.6,2.5) rectangle ++(0.3,0.3) node[pos=0.5] {\tiny S};
+	\draw[line width=0.1pt, fill=myRed] (4.6,3)   rectangle ++(0.3,0.3) node[pos=0.5] {\tiny S};
+	\draw[line width=0.1pt, fill=myRed] (4.6,3.5) rectangle ++(0.3,0.3) node[pos=0.5] {\tiny S};
+	\draw[line width=0.1pt, fill=myRed] (4.6,4)   rectangle ++(0.3,0.3) node[pos=0.5] {\tiny S};
+	\draw[line width=0.1pt, fill=myRed] (4.6,4.5) rectangle ++(0.3,0.3) node[pos=0.5] {\tiny S};
+
+	% cells
+	\begin{scope}[shift={(0,0)}]
+		\draw[line width=0.1pt, fill=myOtherYellow] (0,0) rectangle ++(1.5,1.5);
+		\newarray\numbers
+		\readarray{numbers}{3 & 3 & 0 &
+							0 & 0 & 0 &
+							0 & 0 & 0}
+		\dataheight=3
+		\begin{scope}[shift={(0.1,0.1)}]
+			\foreach \x in {1,2,3}{
+				\foreach \y in {1,2,3}{
+					\pgfmathtruncatemacro{\xt}{\x}
+					\pgfmathtruncatemacro{\yt}{\y}
+					\checknumbers(\yt,\xt)
+					\trimspace\cachedata
+					\draw[line width=0.1pt, \cachedata] (-0.5+\x/2,1.5-\y/2) rectangle ++(0.3,0.3);
+				}
+			}
+		\end{scope}
+	\end{scope}
+
+	\begin{scope}[shift={(2,0)}]
+		\draw[line width=0.1pt, fill=myOtherYellow] (0,0) rectangle ++(1.5,1.5);
+		\newarray\numbers
+		\readarray{numbers}{3 & 3 & 1 &
+							1 & 1 & 0 &
+							0 & 0 & 0}
+		\dataheight=3
+		\begin{scope}[shift={(0.1,0.1)}]
+			\foreach \x in {1,2,3}{
+				\foreach \y in {1,2,3}{
+					\pgfmathtruncatemacro{\xt}{\x}
+					\pgfmathtruncatemacro{\yt}{\y}
+					\checknumbers(\yt,\xt)
+					\trimspace\cachedata
+					\draw[line width=0.1pt, \cachedata] (-0.5+\x/2,1.5-\y/2) rectangle ++(0.3,0.3);
+				}
+			}
+		\end{scope}
+	\end{scope}
+
+	\begin{scope}[shift={(4,0)}]
+		\draw[line width=0.1pt, fill=myOtherYellow] (0,0) rectangle ++(1.5,1.5);
+		\newarray\numbers
+		\readarray{numbers}{4 & 4 & 1 &
+							1 & 1 & 0 &
+							0 & 0 & 0}
+		\dataheight=3
+		\begin{scope}[shift={(0.1,0.1)}]
+			\foreach \x in {1,2,3}{
+				\foreach \y in {1,2,3}{
+					\pgfmathtruncatemacro{\xt}{\x}
+					\pgfmathtruncatemacro{\yt}{\y}
+					\checknumbers(\yt,\xt)
+					\trimspace\cachedata
+					\draw[line width=0.1pt, \cachedata] (-0.5+\x/2,1.5-\y/2) rectangle ++(0.3,0.3);
+				}
+			}
+		\end{scope}
+	\end{scope}
+
+	\begin{scope}[shift={(8,0)}]
+		\draw[line width=0.1pt, fill=myOtherYellow] (0,0) rectangle ++(1.5,1.5);
+		\newarray\numbers
+		\readarray{numbers}{2 & 2 & 1 &
+							1 & 1 & 2 &
+							2 & 2 & 0}
+		\dataheight=3
+		\begin{scope}[shift={(0.1,0.1)}]
+			\foreach \x in {1,2,3}{
+				\foreach \y in {1,2,3}{
+					\pgfmathtruncatemacro{\xt}{\x}
+					\pgfmathtruncatemacro{\yt}{\y}
+					\checknumbers(\yt,\xt)
+					\trimspace\cachedata
+					\draw[line width=0.1pt, \cachedata] (-0.5+\x/2,1.5-\y/2) rectangle ++(0.3,0.3);
+				}
+			}
+		\end{scope}
+	\end{scope}
+
+	\begin{scope}[shift={(4,-2.5)}]
+		\draw[line width=0.1pt, fill=myGreen] (0,0) rectangle ++(1.5,1.5);
+		\newarray\numbers
+		\readarray{numbers}{4 & 4 & 1 &
+							1 & 1 & 0 &
+							0 & 0 & 0}
+		\dataheight=3
+		\begin{scope}[shift={(0.1,0.1)}]
+			\foreach \x in {1,2,3}{
+				\foreach \y in {1,2,3}{
+					\pgfmathtruncatemacro{\xt}{\x}
+					\pgfmathtruncatemacro{\yt}{\y}
+					\checknumbers(\yt,\xt)
+					\trimspace\cachedata
+					\draw[line width=0.1pt, \cachedata] (-0.5+\x/2,1.5-\y/2) rectangle ++(0.3,0.3);
+				}
+			}
+		\end{scope}
+	\end{scope}
+
+	\begin{scope}[shift={(6,-2.5)}]
+		\draw[line width=0.1pt, fill=myGreen] (0,0) rectangle ++(1.5,1.5);
+		\newarray\numbers
+		\readarray{numbers}{0 & 0 & 1 &
+							1 & 1 & 0 &
+							0 & 0 & 0}
+		\dataheight=3
+		\begin{scope}[shift={(0.1,0.1)}]
+			\foreach \x in {1,2,3}{
+				\foreach \y in {1,2,3}{
+					\pgfmathtruncatemacro{\xt}{\x}
+					\pgfmathtruncatemacro{\yt}{\y}
+					\checknumbers(\yt,\xt)
+					\trimspace\cachedata
+					\draw[line width=0.1pt, \cachedata] (-0.5+\x/2,1.5-\y/2) rectangle ++(0.3,0.3);
+				}
+			}
+		\end{scope}
+	\end{scope}
+
+	\begin{scope}[shift={(8,-2.5)}]
+		\draw[line width=0.1pt, fill=myGreen] (0,0) rectangle ++(1.5,1.5);
+		\newarray\numbers
+		\readarray{numbers}{2 & 2 & 1 &
+							1 & 1 & 2 &
+							2 & 2 & 0}
+		\dataheight=3
+		\begin{scope}[shift={(0.1,0.1)}]
+			\foreach \x in {1,2,3}{
+				\foreach \y in {1,2,3}{
+					\pgfmathtruncatemacro{\xt}{\x}
+					\pgfmathtruncatemacro{\yt}{\y}
+					\checknumbers(\yt,\xt)
+					\trimspace\cachedata
+					\draw[line width=0.1pt, \cachedata] (-0.5+\x/2,1.5-\y/2) rectangle ++(0.3,0.3);
+				}
+			}
+		\end{scope}
+	\end{scope}
+
+	\draw[->, line width=0.66pt] (1.5,0.75) -- ++(0.5,0);
+	\draw[->, line width=0.66pt] (3.5,0.75) -- ++(0.5,0);
+	\draw[->, line width=0.66pt] (4.75,0) -- ++(0,-1);
+	\draw[->, line width=0.66pt] (5.5,-1.75) -- ++(0.5,0);
+	\draw[->, line width=0.66pt] (7.5,-1.75) -- ++(0.5,0);
+	\draw[<-, line width=0.66pt] (8.75,0) -- ++(0,-1);
+\end{tikzpicture}
+
+

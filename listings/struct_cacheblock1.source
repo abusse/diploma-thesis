@@ -1,0 +1,8 @@
+/* Cache block metadata structure */
+struct cacheblock {
+	spinlock_t lock;		/* Lock to protect operations on the bio list */
+	sector_t block;			/* Sector number of the cached block */
+	unsigned short state;	/* State of a block */
+	unsigned long counter;	/* Logical timestamp of the block's last access */
+	struct bio_list bios;	/* List of pending bios */
+};

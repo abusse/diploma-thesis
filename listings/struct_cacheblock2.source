@@ -1,0 +1,7 @@
+/* Cache block metadata structure */
+struct cacheblock {
+	sector_t block	 : 56;	/* Sector number of the cached block */
+	sector_t access	 :  4;	/* Counter for replacement algorithm */	
+	sector_t state	 :  3;	/* State of a block */
+	sector_t visited :  1;	/* Pending bios in bios_list */
+};

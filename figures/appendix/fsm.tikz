@@ -1,0 +1,31 @@
+\begin{tikzpicture}[state/.style={circle, draw, minimum size=2.2cm, line width=0.75pt},
+                    every edge/.append style={line width=1.33pt},
+                    align=center, 
+                    shorten >=1pt,
+                    shorten <=1pt,
+                    node distance=5cm,
+                    on grid,
+                    auto] \titleFont
+    \node[state] (invalid)                                               {Invalid}; 
+    \node[state] (reserved_valid) [below left=3.5cm and 5cm of invalid]  {Reserved \\ for Valid}; 
+    \node[state] (valid)          [below= of reserved_valid]             {Valid};
+    \node[state] (reserved_dirty) [below right=3.5cm and 5cm of invalid] {Reserved \\ for Dirty}; 
+    \node[state] (dirty)          [below= of reserved_dirty]             {Dirty};
+    \node[state] (writeback)      [below left=3.5cm and 5cm of dirty]    {Writeback};
+    \path[->] 
+        (invalid)         edge                                 node[rectangle,fill=white,anchor=center, inner sep=4pt]          			   {Insert Read}    			 (reserved_valid)
+        (reserved_valid)  edge[bend right=40]                  node[rectangle,fill=white,anchor=center, inner sep=4pt, pos=0.4] 			   {I/O-Callback}   			 (valid)
+        (valid)           edge[bend right=40]                  node[rectangle,fill=white,anchor=center, inner sep=4pt, pos=0.4] 			   {Insert Read}    			 (reserved_valid)
+        (valid)           edge                                 node[rectangle,fill=white,anchor=center, inner sep=4pt]          			   {Write and not Write-Through} (dirty)
+        (valid)           edge                                 node[rectangle,fill=white,anchor=center, inner sep=4pt]          			   {Insert Write}   			 (reserved_dirty)
+        (invalid)         edge                                 node[rectangle,fill=white,anchor=center, inner sep=4pt]          			   {Insert Write}   			 (reserved_dirty)
+        (reserved_dirty)  edge                                 node[rectangle,fill=white,anchor=center, inner sep=4pt]          			   {I/O-Callback}   			 (dirty)
+        (dirty)           edge                                 node[rectangle,fill=white,anchor=center, inner sep=4pt]          			   {Write Back}     			 (writeback)
+        (writeback)       edge                                 node[rectangle,fill=white,anchor=center, inner sep=4pt]          			   {Write-Callback} 			 (valid)
+        (valid)			  edge[out=165, in=180, looseness=1.6] node[rectangle,fill=white,anchor=center, inner sep=4pt, align=center, pos=0.45] {Write and\\Write-Through} 	 (invalid);
+    \path[<-] (invalid) edge ++(0,2);
+
+    % The anchor points for the Bézier curves makes it hard for Tikz to determine the correct bounding box, so we have to tell it where it is
+    \pgfresetboundingbox
+    \path[use as bounding box] (-10,2.5) rectangle (7,-13.5);
+\end{tikzpicture}

@@ -1,0 +1,19 @@
+\begin{tikzpicture}[scale=0.75, every node/.style={transform shape}]\titleFont
+	\fill[myGray] (-0.25,-0.25) rectangle (13.4,1.8);
+	\fill[myGray] (15.1,-0.25) rectangle (18.75,1.8);
+
+	\draw[line width=0.4pt] (13.4,0.85) -- (13.4,1.8) -- (-0.25,1.8) -- (-0.25,-0.25) -- (13.4,-0.25) -- (13.4,-0.1);
+	\draw[line width=0.4pt] (15.1,-0.1) -- (15.1,-0.25) -- (18.75,-0.25) -- (18.75,1.8) -- (15.1,1.8) -- (15.1,0.85);
+
+	\node[anchor=mid] at (6.5,1.25)  {\bfseries Test-Rechner};
+	\node[anchor=mid] at (17,1.25) {\bfseries \breakC{Entwicklungs-\\Rechner}};
+
+	\draw[line width=0.1pt, fill=myYellow] (0,0)   rectangle ++(3,0.7) node[pos=0.5] {Cache-Modul};
+	\draw[<->, line width=0.6pt] (3,0.35) -- node[fill=myGray, anchor=mid, text=black]{\footnotesize debugfs} ++(2,0);
+	\draw[line width=0.1pt, fill=myBlue] (5,0)   rectangle ++(3,0.7) node[pos=0.5] {Dateisystem};
+	\draw[<->, line width=0.6pt] (8,0.35) -- node[fill=myGray, anchor=mid, text=black, inner sep=0pt]{\footnotesize \breakC{Datei-\\zugriff}} ++(2,0);
+	\draw[line width=0.1pt, fill=myRed] (10,0)   rectangle ++(3,0.7) node[pos=0.5] {Debug-Server};
+	\draw[<->, line width=0.6pt] (13,0.35) -- node[fill=white, anchor=mid, text=black]{\footnotesize Ethernet} ++(2.5,0);
+	\draw[line width=0.1pt, fill=myGreen] (15.5,0)   rectangle ++(3,0.7) node[pos=0.5] {Visualizer};
+\end{tikzpicture}
+

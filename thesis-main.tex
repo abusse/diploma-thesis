@@ -1,0 +1,604 @@
+% use pdf version 1.4
+\pdfoptionpdfminorversion=5
+
+\documentclass[twoside, 11pt, a4paper]{report} 
+
+\usepackage[utf8]{inputenc}
+
+% Document properties %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\def\Title {SSD-basiertes Caching von Blockgeräten}
+\def\Author {Anselm Busse}
+\def\Subject {Diplomarbeit} 
+\def\Keywords {SSD, HDD, Cache, Blockgerät}
+
+\pdfinfo{
+  /Author (Anselm Busse)
+  /Title (SSD-basiertes Caching von Blockger\string\344ten)
+  /Subject (Diplomarbeit)
+  /Keywords (SSD, HDD, Cache, Blockger\string\344t)
+}
+
+% Definitions for conditional document processing %%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Define macro to set options
+\usepackage{keyval}
+\def\setoptions#1{\setkeys{opts}{#1}}
+
+% Draft option
+% Usage: \setoptions{draft} or \setoptions{draft=true} for draft version.
+%        \setoptions{draft=false} (or comment out) for final version
+\newif\ifdraft\draftfalse
+\makeatletter
+\define@key{opts}{draft}[true]%
+           {\def\tempa{true}\def\tempb{#1}%
+            \ifx\tempa\tempb%
+              \drafttrue%
+            \else%
+              \draftfalse%
+            \fi}%
+\makeatother
+
+% Options %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% For final version comment out the following line
+\setoptions{draft=false}
+
+% Included packages %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\usepackage[a-1b]{pdfx}
+\usepackage[ngerman]{babel}
+\usepackage[babel,german=quotes]{csquotes}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{wasysym}
+\usepackage{amsfonts}
+\usepackage{xspace}
+\usepackage[a4paper,twoside,centering,hmargin={3cm, 3cm},vmargin={3cm,3cm}]{geometry}
+\usepackage{fancyhdr}
+\usepackage{sectsty}
+\usepackage{color}
+\usepackage[subfigure]{tocloft}
+\usepackage{subfigure}
+\usepackage[hang]{caption2}
+\usepackage[hang, bottom]{footmisc}
+\usepackage{listings}
+\usepackage{mdwlist}
+\usepackage[normalem]{ulem}
+\usepackage{makeidx} 
+\usepackage{extramarks}
+\usepackage{float}
+\usepackage{textcomp}
+\usepackage[]{acronym}
+\usepackage{array}
+\usepackage{chngcntr}
+\usepackage{arrayjobx}
+\usepackage{trimspaces}
+\usepackage{xstring}
+
+\usepackage{graphicx}
+
+\usepackage{tikz}
+\usepackage{pgfplots, pgfplotstable}
+% Use a recent version for tikz and pgf plotting
+\pgfplotsset{compat=1.14}
+\usepgfplotslibrary{colorbrewer}
+\pgfplotsset{cycle list/Dark2}
+\usepgfplotslibrary{groupplots}
+\usetikzlibrary{calc}
+\usetikzlibrary{patterns}
+\usetikzlibrary{arrows,arrows.meta}
+\usetikzlibrary{decorations.pathreplacing,calligraphy}
+\usetikzlibrary{intersections}
+\usetikzlibrary{positioning}
+\usetikzlibrary{automata}
+\usetikzlibrary{backgrounds}
+\tikzset{
+    %Define standard arrow tip
+    >=stealth'
+}
+
+\makeatletter
+\def\trimspace#1{\trim@spaces@in{#1}}
+\makeatother
+
+\newcommand\irregularlineh[2]{%
+  let \n1 = {rand*(#1)} in
+  +(0,0)
+  \foreach \a in {0.2,0.3,...,#2}{
+    let \n1 = {rand*(#1)} in
+    -- +(\a-0.1,\n1)
+  } -- +(#2,0)
+}  % #1=seed, #2=length of horizontal line
+
+\newcommand\irregularlinev[2]{%
+  let \n1 = {rand*(#1)} in
+  +(0,0)
+  \foreach \a in {0.2,0.3,...,#2}{
+    let \n1 = {rand*(#1)} in
+    -- +(\n1,\a-0.1)
+  } -- +(0,#2)
+}  % #1=seed, #2=length of horizontal line
+
+\newcommand{\includetikz}[2][1]{\scalebox{#1}{\input{#2.tikz}}}
+
+\hypersetup{final,            %links are only inserted in final mode
+      %pdfpagemode={UseOutlines},
+      bookmarksopen=false,bookmarksopenlevel=0,
+      bookmarksnumbered=true,
+      hypertexnames=false,
+      pdfstartview={FitV},
+      colorlinks=false,linkcolor={black},citecolor={black},urlcolor={black},
+      linktoc=all,
+      breaklinks=true,
+      %pagebackref=true,
+      plainpages=false,
+      pageanchor=true,
+      %backref=page,
+      }
+\PassOptionsToPackage{dvipsnames}{xcolor}
+
+\usepackage[
+      backend=biber,
+      bibencoding = utf8,
+      defernumbers=true,
+      natbib = true,
+      style = numeric-comp,
+      giveninits=true,
+      maxnames = 12,
+      minnames = 1,
+      maxcitenames=2,
+      backref = false,
+      backrefstyle = two,
+      defernumbers = true,
+      isbn=true,
+      doi=true]{biblatex}
+
+\addbibresource{bibliography.bib}
+
+% only print isbn or issn if doi is not present
+\DeclareSourcemap{
+  \maps[datatype=bibtex]{
+    \map{
+      \step[fieldsource=doi,final]
+      \step[fieldset=isbn,null]
+    }
+    \map{
+      \step[fieldsource=doi,final]
+      \step[fieldset=issn,null]
+    }
+  }
+}
+
+\DeclareBibliographyDriver{standard}{%
+  \usebibmacro{bibindex}%
+  \usebibmacro{begentry}%
+  \usebibmacro{author/translator+others}%
+  \newunit\newblock
+  \usebibmacro{byeditor+others}%
+  \setunit{\labelnamepunct}\newblock
+  \usebibmacro{title}%
+  \newunit\newblock
+  \printfield{number}%
+  \setunit{\addspace}\newblock
+  \printfield[parens]{type}%
+  \newunit\newblock
+  \usebibmacro{location+date}%
+  \newunit\newblock
+  \iftoggle{bbx:url}
+      {\usebibmacro{url+urldate}}
+    {}%
+    \newunit\newblock
+  \usebibmacro{addendum+pubstate}%
+  \setunit{\bibpagerefpunct}\newblock
+  \usebibmacro{pageref}%
+  \newunit\newblock
+  \usebibmacro{related}%
+  \usebibmacro{finentry}
+}
+
+% Page setup via geometry package %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\geometry{a4paper,twoside,centering}
+\geometry{hmargin={3cm, 3cm},vmargin={3cm,3cm}}
+
+
+% Helpful macros and definitions %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Calculation of current time based on counter \time (minutes since midnight) 
+% Usage: \now
+\newcount\myhours    
+\newcount\myminutes  
+\myhours   = \time \divide \myhours by 60
+\myminutes = \time \multiply \myhours by 60 \advance \myminutes by -\myhours
+             \divide \myhours by 60
+\def\now{\ifnum\myhours<10{}0\fi\number\myhours:\ifnum\myminutes<10{}0\fi\number\myminutes}
+
+% Pretty printing of listings    
+\makeatletter
+\@ifpackageloaded{listings}{%
+  \lstset{%
+    keywords={Input,Output,if,then,endif,else,procedure,begin,end,for,forall,foreach,do,return,loop,program,function,case,break,switch,endswitch,endfor,endforall,repeat,until,endloop,sync,endsync,private,and,or,not,send,while},
+    basicstyle=\footnotesize \sffamily,%
+    stringstyle={\underbar},
+    keywordstyle=\bfseries,%
+    commentstyle=\rm \it \footnotesize,
+    morecomment=[l]{//},
+    escapeinside={(*}{*)},
+    numberstyle=\tiny,% size of line numbers
+    stepnumber=1,% show every 5th line number
+    numbers=left,% line numbers on the left
+    numbersep=5pt,
+    xleftmargin=4ex,
+    texcl=true,% allow TeX code in comments
+    columns=[l]flexible, %
+    firstnumber=auto,
+    mathescape=true,% maintain meaning of $ signs (escape to math mode) $
+    frame=lines,% use a line above and below the listing for separation
+    captionpos=b,% print the caption below the listing
+    aboveskip=16pt% space above the listing
+  }
+  \newcommand{\thelstlisting}{\arabic{lstlisting}}
+}{}
+\makeatother
+
+% Show defined labels in draft mode
+\ifdraft
+  \usepackage[outer,draft]{showlabels}
+  \renewcommand{\showlabelfont}{\scriptsize\sf}
+\fi
+
+% Adds a <line> to the Table of Contents (TOC)
+% Usage: \addtotoc{<line>}
+\newcommand{\addtotoc}[1]{
+  \ifnum0=\csname c@section\endcsname
+    \def\myLevel{section}
+    \def\myEntry{#1}
+  \else
+    \ifnum0=\csname c@subsection\endcsname
+      \def\myLevel{section}
+      \def\myEntry{\protect\numberline{}{#1}}
+    \else
+      \def\myLevel{subsection}
+      \def\myEntry{\protect\numberline{}{#1}}
+    \fi
+  \fi
+  \addcontentsline{toc}{\myLevel}{\myEntry}
+}
+
+% Prints source code identifiers such as method and class names using a
+% differint font, i.e., courier 
+% Usage: \code{<method>}
+\newcommand{\code}[1]{\texttt{#1}}
+
+% Defines a TODO <aspect> that is only visible in draft mode
+% Usage: \TODO{<aspect>} simply adds a blue todo to the text
+%        \TODO[<description>]{<aspect>} also adds <description> to the TOC
+\ifdraft 
+  \newcommand{\TODO}[2][@]{
+    {\textcolor{blue}{[TODO: #2]}}
+    \ifx#1@
+    \else
+      \addtotoc{\textcolor{blue}{TODO: #1}}
+    \fi
+  }
+\else
+  \newcommand{\TODO}[2][@]{}
+\fi
+
+% Underlines <passage>s that should be checked later (visible in draft mode)
+% Usage \CHECK{<passage>}
+\ifdraft 
+  \newcommand{\CHECK}[1]{\uwave{#1}}
+\else
+  \newcommand{\CHECK}[1]{#1}
+\fi
+
+% Alternative to commenting out <paragraphs>
+% Usage: \FORGET{<paragraphs>}
+\ifdraft
+  \newcommand{\FORGET}[1]{\sout{#1}}
+\else
+  \newcommand{\FORGET}[1]{}
+\fi
+
+\newcommand{\breakL}[1]{\begin{tabular}{l}#1\end{tabular}}
+\newcommand{\breakC}[1]{\begin{tabular}{c}#1\end{tabular}}
+\newcommand{\breakR}[1]{\begin{tabular}{r}#1\end{tabular}}
+
+% Fonts %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Font definitions
+\newcommand{\titleFont}{\fontfamily{cmss}\fontseries{m}\fontshape{n}\selectfont}
+\newcommand{\titleFontBold}{\fontfamily{cmss}\fontseries{bx}\fontshape{n}\selectfont}
+\newcommand{\titleFontSlanted}{\fontfamily{cmss}\fontseries{m}\fontshape{sl}\selectfont}
+\newcommand{\textFont}{\fontfamily{cmr}\fontseries{m}\fontshape{n}\selectfont}
+\newcommand{\textFontBold}{\fontfamily{cmr}\fontseries{bx}\fontshape{n}\selectfont}
+\newcommand{\textFontSlanted}{\fontfamily{cmr}\fontseries{m}\fontshape{sl}\selectfont}
+\newcommand{\textFontItalic}{\fontfamily{cmr}\fontseries{m}\fontshape{it}\selectfont}
+
+% Set fonts for headlines, tables, and listings
+\allsectionsfont{\titleFontBold}
+\renewcommand{\cfttoctitlefont}{\titleFontBold\Huge}
+\renewcommand{\cftloftitlefont}{\titleFontBold\Huge}
+\renewcommand{\cftchapfont}{\titleFontBold}
+\renewcommand{\cftchappagefont}{\titleFontBold}
+
+
+% Page Layout %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Standard header and footer  
+\pagestyle{fancy}
+\renewcommand{\chaptermark}[1]{\markboth{\thechapter\ \MakeUppercase{#1}}{}}
+\renewcommand{\sectionmark}[1]{\markright{\thesection\ \MakeUppercase{#1}}}
+\renewcommand{\headrulewidth}{0pt}
+\fancyhead{}
+\fancyhead[RE]{\titleFont\leftmark}
+\fancyhead[LO]{\titleFont\rightmark}
+\fancyhead[LE,RO]{\titleFont\thepage}
+\ifdraft
+  \fancyfoot[C]{\today, \now} 
+\else
+  \fancyfoot{}
+\fi
+
+% header and footer on other pages
+\fancypagestyle{plain}{
+  \fancyhead{}
+  \renewcommand{\headrulewidth}{0pt}
+  \fancyfoot[CE,CO]{\titleFont\thepage}
+}
+
+\setlength{\headheight}{14pt}
+
+% Paragraphs and footnotes
+\setlength\parskip{\medskipamount}
+\setlength\parindent{0pt}
+\setlength\footnotemargin{0.8em}
+
+% Document specific commands and abbreviations %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\definecolor{myRed}{RGB}{205,140,140}
+\definecolor{myGreen}{RGB}{178,195,134}
+\definecolor{myGray}{RGB}{230,230,230}
+\definecolor{myBlue}{RGB}{118,148,189}
+\definecolor{myYellow}{RGB}{237,188,75}
+\definecolor{myTeal}{RGB}{118,184,184}
+\definecolor{myOtherYellow}{RGB}{249,249,165}
+\definecolor{myOrange}{RGB}{237,176,127} 
+
+\definecolor{javadoc}{rgb}{.247,.373,.749}
+\definecolor{comment}{rgb}{.247,.498,.373}
+\definecolor{keyword}{rgb}{.498,0,.333}
+\definecolor{string}{rgb}{.165,0,1}
+\definecolor{lightgray}{rgb}{.99,.99,.99}
+
+% don't footnote numbers with 1 every chapter %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\counterwithout{footnote}{chapter}
+
+%\renewcommand{\ttdefault}{lmtt}
+\DeclareFontShape{OT1}{cmtt}{bx}{n}{<5><6><7><8><9><10><10.95><12><14.4><17.28><20.74><24.88>cmttb10}{}
+
+% Hyphenations %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\hyphenation{
+    Cache-block
+    Ker-nel-mo-dul
+    Cache-meta-daten-struk-tur
+    Kon-struk-tor-rou-tine
+    Flash-spei-cher-me-dien
+    Da-ten-strom-ma-ni-pu-la-ti-onen
+    Cache
+    Booten
+}
+
+% Title page %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{document}
+\renewcommand{\thepage}{\roman{page}}
+
+\begin{titlepage}
+\titleFont
+\begin{figure}
+\titleFont
+  \begin{flushright}
+      \begin{tabular}[m]{r}
+        Technische Universität Berlin \\
+        Fakultät Elektrotechnik und Informatik \\
+        Institut für Telekommunikationssysteme \\
+        Fachgebiet Kommunikations- und Betriebssysteme \\
+      \end{tabular}%
+      \begin{tabular}[m]{c}
+        \includegraphics[width=2.5cm]{figures/tu-logo}
+      \end{tabular}
+  \end{flushright}
+\end{figure}
+
+\begin{center}
+\rule{0pt}{0pt}
+\vfill
+\vfill
+\vfill
+
+\begin{Huge}
+\titleFontBold
+SSD-basiertes Caching\\[0.75ex]
+von Blockgeräten\\[0.75ex]
+\end{Huge}
+
+\vfill
+\vfill
+
+\begin{huge}
+\titleFontBold
+Diplomarbeit
+\end{huge} \\
+\vspace{.5cm}
+vorgelegt von \\
+\vspace{.5cm}
+\begin{Large}
+\titleFontBold
+Anselm Busse
+\end{Large} \\ \vspace{.5cm}
+
+\vfill
+\vfill
+\vfill
+\vfill
+\vfill
+
+\begin{tabular}{rl}
+Referent:    & Prof. Dr. Hans-Ulrich Heiß\\
+Korreferent: & Prof. Dr.-Ing. habil. Gero Mühl\\
+Betreuer:    & Dr.-Ing. Jan Richling\\
+\end{tabular}
+\end{center}
+\end{titlepage}
+\textFont
+
+\cleardoublepage
+\vspace*{\fill}
+
+Die selbständige und eigenhändige Ausfertigung versichert an Eides statt \newline
+Berlin, den 28. Juni 2010 \newline \newline
+\hbox{} \dotfill \hspace{7.5cm} \hbox{} \newline
+\hbox{} \begin{small}
+Unterschrift
+\end{small}
+
+% Table of contents, list of figures, etc. %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\cleardoublepage
+\tableofcontents
+\cleardoublepage
+\phantomsection
+\addcontentsline{toc}{chapter}{\listfigurename}
+\listoffigures
+\cleardoublepage
+
+\phantomsection
+\chapter*{Abkürzungsverzeichnis}
+\addcontentsline{toc}{chapter}{Abkürzungsverzeichnis}
+\renewcommand{\chaptermark}[1]{\markboth{\MakeUppercase{#1}}{}}
+\chaptermark{}
+\begin{acronym}[]
+ \acro{BIO}{Block-Ein-/Ausgabe}
+ \acro{DM}{Device-Mapper}
+ \acro{ECC}{Error Correction Code}
+ \acro{ext3}{Third Extended Filesystem}
+ \acro{ITM}{Intel Turbo Memory}
+ \acro{LFU}{Least Frequently Used}
+ \acro{LRU}{Least Recently Used}
+ \acro{MLC}{Multi-Level-Cell}
+ \acro{RAID}{redundante Anordnung kostengünstiger Festplatten}
+ \newacroplural{RAID}[\mbox{RAIDs}]{redundante Anordnung kostengünstiger Festplatten}
+ \acro{SAN}{Storage Area Network}
+ \acro{SLC}{Single-Level-Cell}
+ \acro{SSD}{Solid State Drive}
+ \acro{UUID}{Universally Unique Identifier}
+\end{acronym}
+
+% Content %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\cleardoublepage
+\setcounter{page}{1}
+\renewcommand{\thepage}{\arabic{page}}
+\renewcommand{\chaptermark}[1]{\markboth{\thechapter\ \MakeUppercase{#1}}{}}
+
+\include{chapter1-intro}          \cleardoublepage
+\include{chapter2-background}     \cleardoublepage
+\include{chapter3-related_work}   \cleardoublepage
+\include{chapter4-problem}        \cleardoublepage
+\include{chapter5-architecture}   \cleardoublepage
+\addtocontents{toc}{\protect\newpage}
+\include{chapter6-implementation} \cleardoublepage
+\include{chapter7-evaluation}     \cleardoublepage
+\include{chapter8-conclusion}     \cleardoublepage
+\include{chapterA-appendix}       \cleardoublepage
+
+% References %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\cleardoublepage
+\phantomsection
+\addcontentsline{toc}{chapter}{Literaturverzeichnis}
+\chaptermark{Literaturverzeichnis}
+\sectionmark{Literaturverzeichnis}
+\printbibliography
+\newpage
+\chaptermark{}
+\sectionmark{}
+\mbox{}
+\newpage
+\mbox{}
+\newpage
+\mbox{}
+\newpage
+
+%% Temporarily enlarge this page to push
+%% down the bottom margin
+\thispagestyle{empty}
+\vspace*{5mm}
+\begin{center}
+\begin{minipage}{.8\textwidth}
+\titleFont \large
+\Author \newline
+\titleFontBold \Large
+\Title \newline
+\titleFont \normalsize
+
+\setlength{\parskip}{1em}
+
+Diese Arbeit beschäftigt sich mit der Frage, ob es möglich und sinnvoll ist ein
+Solid State Drive (SSD) als Cache für eine herkömmliche Magnetscheiben-basierte
+Festplatte zu nutzen.
+
+In aktuellen Rechnersystemen stellt häufig der Massenspeicher in Form einer
+Festplatte den Flaschenhals des Systems dar. Dies ist darauf zurückzuführen,
+dass Festplatten auf Grund ihres mechanischen Aufbaus eine Zugriffszeit haben,
+die um mehrere Größenordnungen schlechter ist als die der nächsten Stufe in der
+Speicherhierarchie -- dem Arbeitsspeicher. Um dieses Problem zu beseitigen,
+wurde in den letzten Jahren halbleiterbasierter Massenspeicher als Ersatz für
+Festplatten eingeführt, der dieses Defizit nicht besitzt. Diese Laufwerke werden
+unter der Bezeichnung SSD vermarktet. SSDs haben jedoch den Nachteil, dass die
+Kosten pro Byte wesentlich über denen von Festplatten liegen. Darum ist mit
+einer vollständigen Substitution von Festplatten durch SSDs in den kommenden
+Jahren kaum zu rechnen.
+
+Die momentane Situation, die daraus resultiert, ist die, dass Anwender häufig
+genutzte Daten auf einer meist kleinen SSD speichern und die restlichen Daten
+auf einer langsameren Festplatte. Dieses Vorgehen ist für den Nutzer jedoch sehr
+umständlich. Deshalb wird in dieser Arbeit die Nutzung von SSDs als
+transparenter Cache für Festplatten vorgeschlagen. Dadurch würde nur ein
+geringes Eingreifen des Nutzers erforderlich sein und es ihm trotzdem
+ermöglicht, die Vorteile von SSDs zu nutzen.
+
+Es werden im Verlauf dieser Arbeit dafür zunächst die technischen Grundlagen von
+Festplatten und SSDs dargestellt und andere Arbeiten betrachtet, die ein
+ähnliches Konzept verfolgen bzw. für die praktische Realisierung des Cache von
+Bedeutung sind. Auf Grundlage dieser technischen und theoretischen
+Rahmenbedingungen wird eine konkrete Problem- und Aufgabenstellung formuliert.
+Basierend auf dieser wird eine Architektur für einen blockbasierten Cache
+vorgeschlagen, deren konkrete Implementierung ebenfalls in dieser Arbeit
+beispielhaft dargestellt wird. Mit Hilfe dieser Beispielimplementierung wurden
+für diese Arbeit Simulationen und Messungen durchgeführt. Sie ermöglichen es die
+Frage zu beantworten, ob es sinnvoll ist, eine SSD als Cache zu nutzen. Somit
+wird abschließend diese Fragestellung anhand der gewonnenen Messergebnisse unter
+den Gesichtspunkten der Leistungssteigerung und des zusätzlichen
+Ressourcenverbrauchs durch den Cache diskutiert.
+
+\end{minipage}
+\end{center}
+
+\end{document}

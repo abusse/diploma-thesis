@@ -1,0 +1,160 @@
+\chapter{Technisches Umfeld}
+\label{chap2}
+
+Um einen in der obigen Art beschriebenen Cache realisieren zu können, muss sich zunächst mit der genauen Funktionsweise der beteiligten Geräte
+auseinandergesetzt werden. Dies sind im konkreten Fall herkömmliche magnetscheibenbasierte Festplatten und Flashspeicher basierte \acp{SSD}. Diese haben jeweils
+spezifische Vor- aber auch Nachteile. Aus diesem Grund wird in diesem Kapitel detailliert auf den Aufbau und die Funktionsweise beider Gerätetypen eingegangen.
+Festplatten werden hierbei in Abschnitt \ref{chap2:hdd} und \acp{SSD} in Abschnitt \ref{chap2:ssd} betrachtet.
+
+\section{Festplattenlaufwerk (HDD)}
+\label{chap2:hdd}
+
+Der Aufbau und die Funktionsweise herkömmlicher Festplatten wird unter anderem von \textcite{info2} und \textcite{tanenbaum1} genauer beschrieben. Eine Festplatte
+arbeitet nach dem Prinzip, Information in Form der Ausrichtung von magnetischen Teilchen zu speichern.
+
+\begin{figure}[b!]\centering
+    \includetikz[0.4]{figures/chapter2/hdd1}%
+    \caption[Schematische Darstellung einer Festplatte]{Schematische Darstellung einer Festplatte (nach \textcite[101]{tanenbaum1})}
+    \label{img:hdd1}
+\end{figure}
+
+Sie bestehen physisch aus einer oder mehreren ferromagnetisch beschichteten Scheiben, auch Platter genannt. Diese können sowohl ein- als auch beidseitig
+beschichtet sein. Sie sind an einer Achse angebracht, welche mit Hilfe eines Motors angetrieben wird. Weiterhin gibt es einen Lesearm, der in eine beliebige
+radiale Position über den Plattern gebracht werden kann. An der Spitze des Armes befindet sich der Lese-/Schreibkopf. Außerdem besitzt eine Festplatte eine
+Steuerelektronik, mit der sie gesteuert wird. Im Detail übernimmt sie die Steuerung des Platter-Motors sowie die Steuerung und Positionierung des
+Schreib-/Lesearms, die Verarbeitung der gelesenen und zu schreibenden Daten und die Protokollumsetzung zum Anschluss an ein Rechnerbussystem. Dieser Sachverhalt
+ist in Abbildung \ref{img:hdd1} skizzenhaft dargestellt.
+
+Die Platter sind in mehrere konzentrische Spuren unterteilt, die als Zylinder bezeichnet werden. Bei den Zylindern handelt es sich nicht, wie möglicherweise
+vermutet werden kann, um Vertiefungen im Platter sondern der Lese-/Schreibkopf schwebt im Abstand von wenigen Nanometern über ihnen. Das Schweben wird hierbei
+durch den \textsc{Bernoulli}-Effekt ereicht. Die Zylinder sind ihrerseits weiter in Blöcke unterteilt, wobei diese nicht nur Nutzdaten enthalten. Vor den
+Nutzdaten -- meist 512kB -- befindet sich eine Präambel, welche zur Kalibrierung des Lese-/Schreibkopfes dient. Dahinter befindet sich ein \ac{ECC}, welcher zur
+Fehlererkennung und Korrektur beim Lesen der Daten dient (Abbildung \ref{img:hdd2}). Die Blöcke, die unter dem gleichen radialen Winkel vom Schreib-/Lesekopf
+erreicht werden können, werden auch Sektor genannt. Dadurch lässt sich ein beliebiger Block durch Angabe des Sektors, Zylinders und Kopfs adressieren. Die Anzahl
+von Sektoren, Zylindern, Köpfen und Größe der Blöcke wird hierbei auch als Festplattengeometrie bezeichnet, mit deren Hilfe sich die Kapazität der Festplatte wie
+folgt berechnen lässt:
+
+\begin{center}
+$\text{Kapazität} = \text{Köpfe} \cdot \text{Sektoren} \cdot \text{Zylinder} \cdot \text{Blockgröße}$
+\end{center}
+
+\begin{figure}[b!]\centering
+    \includetikz[0.95]{figures/chapter2/hdd2}%
+    \caption[Schematische Darstellung eines Platters]{Schematische Darstellung eines Platters (nach \textcite[100]{tanenbaum1})}
+    \label{img:hdd2}
+\end{figure}
+
+Bei modernen Festplatten wird die Geometrie der Festplatte durch den Festplattencontroller jedoch vor dem übrigen System verborgen. Ursprünglich hatte dies als
+Ursache, dass die Adressierung bestimmten Limitierungen bezüglich der maximalen Anzahl der Köpfe, Sektoren und Zylinder unterworfen war. Die Kapazität der
+Festplatten wurde dadurch erhöht, dass pro Platter mehr Spuren und mehr Sektoren pro Spur untergebracht wurden. Die Anzahl der Platter veränderte sich jedoch
+nicht signifikant. Dies führte dazu, dass bald die Anzahl der Sektoren und Zylinder die der maximal adressierbaren Anzahl von Sektoren und Zylinder überstieg. Um
+dieses Problem zu umgehen, wurde dem restlichen System durch den Festplattencontroler eine größere Anzahl von Köpfen gemeldet, als real vorhanden waren. Dies
+erweiterte die Anzahl der adressierbaren Sektoren deutlich.
+
+Im weiteren Verlauf wurde die Aufteilung des Platters weiter verändert, so dass bei modernen Festplatten im äußeren Bereich eines Platters mehr Sektoren
+untergebracht sind als im inneren Bereich. Weiter geht die Tendenz aktuell dahin, dass die Nettoblockgröße von 512 Byte auf vier Kilobyte erhöht 
+wird~\cite[vgl.][]{wdc}, um zusätzlichen Platz einzusparen, der durch Präambel, \ac{ECC} und Lücke zwischen den Blöcken belegt wird. Aus diesen Gründen wurde die
+Adressierung durch Kopf, Sektor und Zylinder durch eine fortlaufende Nummer ersetzt. Diese wird vom Festplattencontroller in die festplattenspezifischen
+Geometrieparameter übersetzt.
+
+Aus den genannten physikalischen Eigenschaften ergeben sich Vorteile aber auch Nachteile. Der größte Vorteil einer Festplatte gegenüber fast allen anderen
+Speichermedien ist die Möglichkeit, große Datenmengen mit einem wahlfreien Zugriff zu einem sehr niedrigen Preis zu speichern. Weiterhin können die Daten relativ
+schnell sequenziell gelesen und geschrieben werden, so dass Festplatten ideal sind für eine mittelfristige Datenarchivierung. Festplatten werden jedoch nicht
+ausschließlich hierfür eingesetzt sondern auch als Systemspeicher, in dem Betriebssystem, Programme und sonstige Nutzerdaten gespeichert werden. Genau hier
+werden die Nachteile von Festplatten sichtbar. Diese Daten werden nicht sequenziell sondern hauptsächlich ungeordnet gelesen. Dies ist problematisch, da die
+Leserate von Festplatten beim ungeordneten Lesen dramatisch einbricht. Der Grund hierfür ist im Aufbau zu finden. Um zu einem bestimmten Block zu springen, muss
+zuerst der Lese-/Schreibarm in die richtige Position gebracht werden. Diese Verzögerung wird \textit{Seek Time} genannt und liegt bei aktuellen Festplatten
+zwischen ca. drei und zwölf Millisekunden~\cite{seagate1,samsung1}. Außerdem braucht der Platter im Durchschnitt eine halbe Umdrehung, bis der
+angeforderte Block unter dem Lese-/Schreibkopf liegt. Diese Verzögerung wird \textit{Latency} genannt. Hinzu kommt noch die Verzögerung des
+Festplattencontrollers (\textit{Controller-Overhead}), die aber im Vergleich zu den anderen beiden Größen recht gering ist. Daher lässt sich die mittlere
+Zugriffszeit für einen beliebigen Block wie folgt berechnen:
+
+\begin{center}
+$\text{Zugriffszeit[ms]} = \text{Spurwechselzeit[ms]} + \underbrace{\frac{60000}{\text{Drehzahl[min}^{-1}\text{]}} \cdot 0,5}_{\text{Latency}} +
+\text{Controller-Overhead[ms]}$
+\end{center}
+
+Um das eben beschriebene Problem beim unsortierten Lesen zu mindern, besitzen moderne Festplatten einen mehrere Megabyte großen Halbleiterspeicher-basierten
+Lese-/Schreib\-cache. Dieser ermöglicht es den Festplatten, häufig angefragte Blöcke vorzuhalten und Lese-/Schreiboperationen ggf. umzuordnen. Das Umordnen kann
+z.B. sinnvoll sein, wenn ein Block im Anfragepuffer liegt, der sich gerade unter dem Lese-/Schreibkopf befindet. Es ist sinnvoller, zunächst diese
+Anfrage zu bearbeiten als später wieder den Lese-/Schreibkopf zu dieser Position zu bewegen.
+
+\section{Solid State Drive (SSD)}
+\label{chap2:ssd}
+
+Der Aufbau und die Funktionsweise von \acp{SSD} wird von \textcite{anand1,anand2} diskutiert. Ein \ac{SSD} dient zwar genau wie eine herkömmliche
+magnetscheibenbasierte Festplatte als Massenspeicher, ist jedoch fundamental anders aufgebaut. Bei einem \ac{SSD} werden die Daten nicht in Form einer
+magnetischen Ausrichtung gespeichert sondern als elektrische Ladung. Dies wird durch eine Implementierung in Halbleitertechnik ermöglicht.
+
+Die Grundbausteine eines \ac{SSD} sind Flash-Speicherbausteine. Der Flashspeicher ist ein persistenter Halbleiterspeicher. Es wird eine im Vergleich zum
+restlichen System relativ hohe Spannung zum Programmieren bzw. Löschen benutzt. Diese Spannung beim Programmieren des Flashspeicher-Transistors macht ihn
+dauerhaft nicht-leitend. So ist es möglich, beim normalen Schalten des Transistors zwischen programmiert und nicht programmiert bzw. gelöscht zu unterscheiden.
+Außerdem wird durch diese Technik ein schnelles Auslesen ermöglicht. Das Programmieren mit hoher Spannung hat jedoch den Nachteil, dass es den Transistor
+physisch schädigt und somit nur eine begrenzte Menge von Programmiervorgängen möglich sind. Weiterhin werden Flashspeicherzellen in \ac{SLC}- und
+\ac{MLC}-Speicherzellen unterschieden. Bei \ac{SLC}-Speicherzellen wird nur ein Bit pro Flashzelle gespeichert, bei \ac{MLC}-Speicherzellen zwei oder mehr.
+\ac{MLC}-Speicherzellen haben einen Kostenvorteil, da sie kleiner sind und somit günstiger bei der Herstellung. Sie haben jedoch den Nachteil, langsamer beim
+Lesen und Programmieren und Fehleranfälliger als \ac{SLC}-Speicherzellen zu sein.
+
+\begin{figure}[b!]\centering
+  \vspace{0.5cm}
+	\includetikz[1.25]{figures/chapter2/ssd1}%
+	\caption[Zeitlicher Ablauf des Schreibens auf einen Cacheblock mit ungültigen Seiten]{Zeitlicher Ablauf des Schreibens auf einen Cacheblock mit ungültigen Seiten (nach \textcite{anand1})}
+	\label{img:ssd1}
+\end{figure}
+
+Auf Grund des zu hohen Aufwandes bei der Adressierung einzelner Flash-Speicherzellen werden diese heute für gewöhnlich zu Seiten à vier Kilobyte zusammengefasst.
+Somit ist die kleinstmögliche schreibbare Datenmenge bei einem Flashbaustein vier Kilobyte groß. Da der Aufwand beim Aufbau zum Löschen der Speicherzellen auf
+Grund der benötigten hohen Spannung noch größer ist, werden für gewöhnlich wiederum 128 der vier Kilobyte Seiten zu einem Löschblock zusammengefasst. Somit ist
+die kleinste löschbare Einheit 512kB groß. Das bedeutet, dass zum Ändern des Inhalts einer Seite zunächst die anderen 127 Seiten ausgelesen und anschließend
+zusammen mit der geänderten Seite wieder zurückgeschrieben werden müssen. Das Vorgehen wird im zeitlichen Ablauf in Abbildung \ref{img:ssd1} dargestellt, wobei
+ein Löschblock der Übersichtlichkeit halber nur aus neun Seiten besteht.
+
+\begin{figure}[b!]\centering
+	\includetikz{figures/chapter2/ssd2}%
+	\caption[Aufbau eines SSD]{Aufbau eines SSD (nach \textcite{anand1})}
+	\label{img:ssd2}
+\end{figure}
+
+Um die Kompatibilität zu den bisherigen Festplatten zu wahren und den Flash-Speicher an einen \mbox{S-ATA}-Controler, SAS-Controller oder den PCI-Express-Bus
+anzuschließen, wird ein weiterer Controllerchip benötigt. Neben der Aufgabe der Protokollwandlung übernimmt dieser das so genannte \textit{Wear-Levelling}.
+Wear-Levelling soll die Lebenszeit von Flashspeichermedien verlängern. Dies wird dadurch erreicht, dass Schreibzugriffe möglichst gleichmäßig auf alle Seiten
+verteilt werden. Ein typisches Szenario hierfür sind die Verwaltungsinformationen des Dateisystems. Sie liegen immer an derselben logischen Speicheradresse und
+werden regelmäßig verändert. Ohne Wear-Levelling würde immer wieder dieselbe Seite beschrieben werden und relativ schnell ausfallen, während die meisten anderen
+noch ihre nahezu vollständige Lebenszeit hätten. Wear-Levelling sorgt nun dafür, dass das Schreiben nicht immer wieder auf derselben Seite stattfindet sondern
+auf einer, auf der in der Vergangenheit weniger Schreibvorgänge stattgefunden haben. So werden sämtliche Schreibvorgänge gleichmäßig auf alle Seiten des
+\ac{SSD}s verteilt. Dies bedeutet allerdings auch einen nicht zu unterschätzenden Verwaltungsaufwand. Zum einen muss die Zuordnung der logischen Plattenadresse
+auf eine konkrete Flashseite vorgenommen und gespeichert werden und zum anderen die Anzahl der Schreibzyklen pro Seite gespeichert werden. Der grundsätzliche
+Aufbau eines \ac{SSD}s wird zum besseren Verständnis in Abbildung \ref{img:ssd1} schematisch dargestellt, wobei die Darstellung nur auf Baugruppen eingeht, die
+für die Programmierung von Relevanz sind.
+
+Ein Problem, das bei der Substitution von Festplatten durch \acp{SSD} entsteht, liegt in der unterschiedlichen Funktionsweise beim Löschen von Daten. Daten auf
+Festplatten können ohne vorheriges Löschen blockweise überschrieben werden. Bei \acp{SSD} ist dies nicht der Fall. Hier müssen Blöcke vor dem Neubeschreiben
+zuerst gelöscht werden. Dies wirft zunächst das bereits oben beschriebenen Problem auf, dass sich sowohl gültige als auch ungültige Daten in einem Block befineen
+können. Wenn die ungültigen Blöcke überschrieben werden sollen, muss erst, wie oben gezeigt, der komplette Block ausgelesen, verändert und dann zurückgeschrieben
+werden. Da das Betriebssystem kein Wissen über die Löschblockgröße eines \ac{SSD} hat, ist es der Regelfall, dass Daten mehrerer Dateien in einem Block
+untergebracht werden, wordurch das gennante Problem sehr häufig auftritt.
+
+\begin{figure}[b!]\centering
+	\includetikz[0.8]{figures/chapter2/ssd3}%
+	\caption[Schema zur Bereitstellung leerer SSD-Blöcke]{Schema zur Bereitstellung leerer SSD-Blöcke (nach \textcite{anand2})}
+	\label{img:ssd3}
+\end{figure}
+
+Dies ist solange relativ unkritisch, solange leere Blöcke zum Bedienen von Schreibanfragen zur Verfügung stehen. Sobald jedoch zwangsweise Daten in die
+ungültigen Bereiche von teilweise gelöschten Blöcken geschrieben werden müssen, kann ein Leistungseinbruch beobachtet werden. Das Vorgehen eines \ac{SSD} beim
+Schreiben ist in Abbilung \ref{img:ssd3} schematisch dargestellt. Solange sich genügend Blöcke in der Liste der leeren Blöcke befinden, kann das \ac{SSD} mit
+voller Geschwindigkeit arbeiten. Sobald der Vorrat jedoch erschöpft ist, müssen aus dem oben genannten Grund teilweise gefüllte Blöcke geräumt werden, der Block
+gelöscht und die geräumten Daten erneut in einen leeren Block geschrieben werden. Dieses Vorgehen ist zeitaufwendig und führt zu dem beobachteten Phänomen des
+Leistungsverlustes bei der längeren Nutzung eines \ac{SSD}.
+
+Das Problem könnte umgangen werden, indem die Daten z.B. während der Leerlaufzeiten des \ac{SSD}, die im normalen Desktopbetrieb relativ häufig auftreten,
+umsortiert werden könnten. Somit würden fast immer ausreichend leere Blöcke zur Verfügug stehen, solange das \ac{SSD} nicht komplett gefüllt ist. Dies ist jedoch
+nicht ohne weiteres möglich, da die Betriebssysteme bzw. genauer die genutzten Dateisysteme unter der Prämisse entwickelt wurden, dass ungültige Daten ohne
+Leistungsverlust überschrieben werden können, wie es bei herkömmlichen Festplatten auch der Fall ist. Dateisysteme markieren beim Löschen von Dateien lediglich
+die zuvor belegten Blöcke als ungültig in ihrem Inhaltsverzeichnis und geben diese Information nicht an das Blockgerät weiter. Bei \acp{SSD} ist dies von
+erheblichem Nachteil, da das Gerät erst beim Überschreiben eines Blockes von seiner Ungültikeit erfährt und das oben beschriebene Umsortieren erst stattfinden
+kann, wenn der Block bereits wieder gebraucht wird und der Vorgang somit zeitkritisch ist. Um diesem Problem entgegenzutreten wurde vor kurzem der
+\mbox{S-ATA}-Standard um den so genannten \texttt{TRIM}-Befehl erweitert~\cite{acs2}. Dieser ermöglicht es, \mbox{S-ATA}-basierte Geräte über die
+Ungültigkeit von Blöcken zu informieren. Unglücklicherweise müssen jedoch für die Nutzung sowohl das Dateissystem als auch Betriebssystemkomponenten wie
+Gerätetreiber und Treiberschnittstellen angepasst werden. So kommt es, dass es momentan zwar schon Geräte gibt, die diese Möglichkeit unterstützen, sie jedoch
+auf Grund der mangelnden Softwareunterstützung nicht genutzt werden kann.

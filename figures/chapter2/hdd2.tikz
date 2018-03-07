@@ -1,0 +1,30 @@
+\begin{tikzpicture}\titleFont
+	\draw[line width=0.66pt] (0,0) circle [radius=3];
+	\foreach \r in {0,0.3,...,2.1}{
+    	\draw[line width=0.25pt, fill=gray!20] (0,0) circle [radius=2.9-\r];
+		\draw[line width=0.25pt, fill=white]   (0,0) circle [radius=2.65-\r];
+	}
+	\draw[line width=0.25pt, fill=black] (0,0) circle [radius=0.75];
+
+	\draw[fill=myGreen]      (-7.25,-5) -- ++(-0.5,0) \irregularlinev{0.66mm}{0.5} -- ++(0,0.5) -- ++(0.5,0) -- ++(0,-0.5); 
+	\draw[fill=myOrange]     (-7,-5)    rectangle ++(-0.25,0.5);
+	\draw[fill=black]        (-6.5,-5)  rectangle ++(-0.5,0.5);
+	\draw[fill=myBlue]       (-5.5,-5)  rectangle ++(-1,0.5);
+	\draw[fill=myGreen]      (-0.5,-5)  rectangle ++(-5,0.5) node[pos=0.5] {\small 4096~Datenbits};
+	\draw[fill=myOrange]     (-0.25,-5) rectangle ++(-0.25,0.5);
+	\draw[fill=black]        (-0.25,-5) rectangle ++(0.5,0.5);
+	\draw[fill=myBlue]       (0.25,-5)  rectangle ++(1,0.5);
+	\draw[fill=myGreen]      (1.25,-5)  rectangle ++(5,0.5) node[pos=0.5] {\small4096~Datenbits};
+	\draw[fill=myOrange]     (6.25,-5)  rectangle ++(0.25,0.5);
+	\draw[fill=black]        (6.5,-5)   rectangle ++(0.5,0.5);
+	\draw[fill=myBlue]       (7,-5) -- ++(0.5,0) \irregularlinev{0.66mm}{0.5} -- ++(0,0.5) -- ++(-0.5,0) -- ++(0,-0.5); 
+
+	\draw (-7.75,-4.5) -- (-0.1,-2.895) -- (-0.08,-2.65);
+	\draw (7.5,-4.5)   -- (0.1,-2.895)  -- (0.08,-2.65);
+
+	\draw[<->, line width=0.5pt] (-6.5,-5.25) -- node[fill=white, anchor=mid, text=black, inner sep=0.5mm]{\small 1~Sektor} (-0.25,-5.25);
+	\draw[<-, line width=0.5pt] (0,-4.45) -- ++(0,0.33) node[anchor=south] {\small Intersektor-Lücke};	
+	\draw[<-, line width=0.5pt] (0.75,-5.05) -- ++(0,-0.33) node[anchor=north, yshift=0.5mm] {\small Präambel};
+	\draw[<-, line width=0.5pt] (6.375,-5.05) -- ++(0,-0.33) node[anchor=north, yshift=0.5mm] {\small ECC};
+\end{tikzpicture}
+

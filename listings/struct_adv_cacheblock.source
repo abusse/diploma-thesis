@@ -1,0 +1,5 @@
+/* Cach block with advanced metadata */
+struct adv_cacheblock {
+	struct cache_c *dmc;
+	struct cacheblock *cacheblock;
+};

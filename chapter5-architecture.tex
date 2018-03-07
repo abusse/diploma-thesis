@@ -1,0 +1,144 @@
+\chapter{Architektur}
+\label{chap5}
+
+Nach der Konkretisierung der Aufgabenstellung im vorangegangenen Kapitel soll nun die zur Lösung der Aufgabe vorgesehen Architektur vorgestellt
+werden. Dabei setzt sich Abschnitt \ref{chap5:hld} mit dem High-Level-Design auseinander. Zusätzlich wird das \ac{DM}-Framework vorgestellt, das bei der
+konkreten Realisierung genutzt wird.
+
+Nach der Beschreibung des High-Level-Designs wird in Abschnitt \ref{chap5:algo} auf den genutzten Cache-Algorithmus eingegangen. Der Algorithmus wird
+detailliert erklärt und an einem Beispiel verdeutlicht.
+
+\section{High-Level-Design}
+\label{chap5:hld}
+
+Bevor eine Architektur für den Cache entwickelt werden kann, muss die Verwaltung von Blockgerätanfragen im Kernel verstanden werden. Sie werden im Kernel durch
+eine so genannte \ac{BIO}-Datenstruktur verwaltet (siehe Anhang Listing \ref{listing:bio}). Diese enthält diverse Verwaltungsinformationen, wie z.B. die
+gewünschten Sektoren, eine Referenz auf das betreffende Blockgerät und Informationen über den Status der Anfrage. \acp{BIO} werden hauptsächlich durch Systemaufrufe von Benutzerprogrammen
+generiert, denen Dateizugriffe zu Grunde liegen. Der Nutzerprozess wird dabei solange blockiert, bis sämtliche von ihm indirekt erzeugte \acp{BIO}
+abgeschlossen sind.
+
+Für die Implementierung des Kernelmoduls bieten sich nun zwei Herangehensweisen an. Die Erste besteht darin, ein Blockgerätetreiber von Grund auf zu entwickeln.
+Dies würde jedoch einen erheblichen Entwicklungsaufwand bedeuten, da einerseits die komplette Blockgeräteschnittstelle, wie sie vom Linux-Kernel vorgeschrieben
+wird, implementiert werden müsste und andererseits der gesamte Zugriff auf das Cacheblockgerät und Quellgerät verwaltet werden müsste. Ferner müssten sämtliche
+\ac{BIO}-Anfragen verwaltet und ggf. gefiltert werden.
+
+Die Zweite effizientere Möglichkeit die Anforderungen der Aufgabenstellung zu erfüllen, stellt der Linux-\ac{DM} dar. Der \ac{DM} stellt ein generisches
+Framework zur Umlenkung von \ac{BIO}-Anfragen auf ein oder mehrere logische oder physische Blockgeräte zur Verfügung. Er erscheint im Kernel wiederum selbst als logisches
+Blockgerät, so dass der Zugriff auf die abgebildeten Geräte vollkommen transparent und ohne Softwareanpassung möglich ist. Der \ac{DM} stellt somit eine einfache
+Möglichkeit dar, Kernelerweiterungen zu implementieren, welche auf der Manipulation von \acp{BIO} basieren. Als Beispiele hierfür sind
+Verschlüsselungsmechanismen, Software \acp{RAID} oder das lineare Aneinanderfügen mehrerer Blockgeräte zu nennen. Da der \ac{DM} für die Bearbeitung der
+Aufgabenstellung dieser Arbeit eine zentrale Rolle spielt, soll an dieser Stelle die Funktionsweise und die dadurch ermöglichte Architektur kurz anhand des
+linearen Aneinanderfügens mehrerer Blockgeräte erläutert werden.
+
+Es wird dafür angenommen, dass im System zwei physische Blockgeräte in Form von Festplatten mit den Bezeichnungen \textit{sda} und \textit{sdb} und einer
+Kapazität von jeweils ein Terabyte existieren. Ziel ist es, ein logisches Blockgerät zu erzeugen, welches eine Kapazität von zwei Terabyte besitzt und die Daten auf den
+beiden physischen Festplatten \textit{sda} und \textit{sdb} speichert. Dieses soll im Folgenden \textit{dm} heißen und das hierfür benötigte Kernel-Modul dm-lincomb. Der
+Sachverhalt ist in Abbildung \ref{img:dm1} schematisch dargestellt. 
+
+\begin{figure}[H]\centering
+    \includetikz[0.9]{figures/chapter5/dm1}%
+    \caption[Exemplarische Darstellung der Device-Mapper-Umgebung]{Exemplarische Darstellung der Device-Mapper-Umgebung}
+    \label{img:dm1}
+\end{figure}
+
+Kernelmodule für das \ac{DM}-Framework müssen ein bestimmtes Set von Funktionen zur Verfügung
+stellen. Von zentraler Bedeutung ist hierbei die \texttt{map} Funktion. Sie wird vom Framework immer dann aufgerufen, wenn an das logische \ac{DM}-Gerät eine
+\ac{BIO}-Anfrage gestellt wird. Für das gewünschtes Blockgerät könnte die \texttt{map}-Funktion\footnote{Diese Funktion erfüllt nicht die Anforderungen des
+\ac{DM}-Frameworks und dient nur zur Veranschaulichung des Sachverhalts.} daher wie folgt aussehen:
+
+\begin{lstlisting}[language=C, basicstyle=\footnotesize\ttfamily, keywordstyle=\bfseries, tabsize=4, mathescape=true, caption=\texttt{map}-Funktion des dm-lincomb Moduls] 
+void map(bio Request){ 
+	if(Request.block $\leq$ 1TB){
+		Request.device	= sda; 
+	}
+	else{
+		Reqeust.block	= Reqeust.block - 1TB;
+		Request.device	= sdb;
+	}
+}
+\end{lstlisting}
+
+Die Funktion überprüft, ob der angeforderte Block innerhalb des ersten Terabyte liegt oder im Zweiten. Sollte er im Ersten liegen, wird die Anfrage lediglich
+auf das Blockgerät \textit{sda} umgelenkt. Liegt er dagegen im Zweiten, wird neben der Umleitung auf das Blockgerät \textit{sdb} die Position des zu lesenden
+Blockes um ein Terabyte verschoben, damit die Anfrage konsistent mit der Blocknummerierung des Gerätes ist. Nach Verlassen der \texttt{map} Funktion wird der
+\ac{BIO}-Auftrag vom \ac{DM}-Framework an die jeweiligen Geräte weitergereicht und dem Benutzer gegenüber transparent ausgeführt.
+
+Auf die genauere Funktionsweise des \ac{DM} selbst soll in dieser Arbeit nicht eingegangen werden. Hierfür wird auf \cite{web-dm} hingewiesen. Es sind jedoch
+sind auch komplexere Datenstrommanipulationen möglich, wie sie für den zu implementierenden Cache benötigt werden.
+
+Das Umlenken des Datenstroms über die \texttt{map}-Funktion, wie es oben beschrieben ist, kann zum Umlenken von Lese-/Schreibanfragen genutzt werden, je
+nachdem, ob die Anfrage aus dem Cache oder vom Quellgerät ausgeführt werden soll. Mit dieser Funktion lässt sich jedoch nicht das Ein- und Auslagern von Seiten in bzw. aus dem
+Cache realisieren. Hierfür muss das prinzipielle Blockdiagramm aus Abbildung \ref{img:hlbd} erweitert werden, so dass das \ac{DM}-Modul selbständig Cacheblöcke
+zwischen den Geräten tauschen kann. Daher ergibt sich für den Cache folgendes High-Level-Blockdiagramm:
+
+\begin{figure}[H]\centering
+    \hspace*{1cm}\includetikz{figures/chapter5/hlbd}%
+    \caption{High-Level-Blockdiagramm des zu implentierenden Caches}
+    \label{img:hlbd}
+\end{figure}
+
+Wie zu erkennen ist, lässt sich das Cache-Modul grundsätzlich in zwei Teile aufteilen. Der erste Teil implementiert das \ac{DM}-Interface und somit unter anderem
+die \texttt{map}-Funktion. Der zweite Teil arbeitet asynchron hierzu und wird für den Tausch von Cacheblöcken zuständig sein. Dabei gilt es einen geeigneten
+Algorithmus für das Tauschen zu finden, was im nächsten Abschnitt diskutiert werden soll.
+
+\section{Cache-Algorithmus}
+\label{chap5:algo}
+
+Der Cache-Algorithmus lässt sich in zwei Bereiche unterteilen. Zum einen in den Bereich der Ersetzungsstrategie und zum anderen in den der Schreibstrategie. Die
+Ersetzungsstrategie legt fest, wann welche Blöcke durch andere ersetzt werden. Die Schreibstrategie legt fest, ob und wann Daten exklusiv auf das Cache- bzw.
+Quellgerät geschrieben werden oder auf beide.
+
+\subsection{Ersetzungsstrategie}
+\label{chap5:algo1}
+
+Der in Abschnitt \ref{chap3:ersetzen} vorgestellte Artikel von \textcite{cache1} kommt zu dem Schluss, dass es durchaus sinnvoll ist, keine reine \ac{LRU}- oder
+\ac{LFU}-Strategie zu verwenden, sondern eine Strategie zu wählen, die zwischen diesen beiden liegt. Aus diesem Grund soll sollte die Strategie, die für diese
+Arbeit entwickelt wurde, keine reine \ac{LRU}- oder \ac{LFU}-Strategie sein, sondern im Bereich dazwischen liegen.
+Weiterhin sollte es möglich sein, mit ihr zumindest näherungsweise eine \ac{LRU}- bzw. \ac{LFU}-Strategie zu ereichen, um untersuchen zu können, welche Strategien für den implementierten Cache Vor- und Nachteile
+mit sich bringen. Des Weiteren soll beim Entwurf der Ersetzungsstrategie stark auf den Speicherverbrauch geachtet werden. Als Grundlage soll zunächst ein
+satzassoziativer Cache dienen. Dies ist ein allgemeiner Ansatz, mit dessen Hilfe sich ebenso ein vollassoziativer als auch ein direkt abgebildeter Cache
+realisieren lässt, da diese nur Untermengen des satzassoziativen Caches sind. Jedes Set wird neben den Cacheblöcken zusätzlich mit einem Zeiger ausgestattet, der es
+ermöglicht, über die Cacheeinträge zu iterieren. Die Metainformationen der Cacheblöcke an sich sollen neben einer Statusvariablen und der Information über den
+aktuell gecacheten Block einen zusätzlichen Zähler beinhalten, um das Zugriffsverhalten auf diesen Block zu reflektieren. Dieser kann theoretisch beliebig lang
+sein, sollte aber aus Speicherersparnis möglichst kurz gehalten werden. Details über die Größe sind im Rahmen der Implementierung zu klären.
+
+Der Zähler der Cacheblöcke wird beim Einlagern mit einem zur Laufzeit definierbaren Wert $s$ initialisiert. Sollten alle Blöcke eines Sets belegt sein, wird
+mit Hilfe des Zeigers im Set über die Cacheblöcke iteriert bis einer gefunden wird, dessen Zähler auf Null steht. Dieser Block wird sodann für die Ersetzung
+ausgewählt. Die Zähler der Blöcke, über die bei der Suche nach dem zu ersetzenden Block iteriert wird, werden um eins vermindert. Beim Zugriff auf einen
+Cacheblock wird sein Zeiger um einen zur Laufzeit zu definierenden Wert $i$ erhöht, bis ein ebenfalls zur Laufzeit definierter Maximalwert $m$ erreicht ist. Die
+Zähler repräsentieren dadurch die Nutzungsfrequenz der Cacheblöcke. Somit ist eine \ac{LFU}-Strategie möglich.
+
+\begin{figure}[b!]\centering
+    \includetikz[0.95]{figures/chapter5/zeit}%
+    \caption[Verhalten des Caches]{Verhalten des Caches für den Zugriffsvektor $\{2,7,9,1,2,7,8,9,8,8,1 \}$ mit $s=1$, $m=4$ und $i=1$ }
+    \label{img:zeit}
+\end{figure}
+
+Dieses Vorgehen hat allerdings noch den Nachteil, dass beim Suchen eines zu ersetzenden Blockes alle Zähler um den Wert des kleinsten Zählers im Set verringert
+werden. Sollten in einem Set z.B. nur stark genutzte Blöcke vorliegen, ständen alle Zähler auf dem Maximalwert. Wenn nun für einen neuen Block, der eventuell
+sogar nur ein einziges Mal benötigt wird, Platz im Set gesucht wird, würden alle Zähler auf Null gesetzt werden, wodurch die Information über die
+Nutzungsfrequenz der Blöcke verloren ginge. Um dies zu vermeiden, läuft der Zeiger höchstens einmal durch das Set. Dies wirkt dem soeben beschriebenen Problem
+entgegen, da die Zeiger pro Versuch des Einlagerns um maximal Eins reduziert werden. Blöcke, die neu hinzukommen sollen und eine noch höhere Nutzungsfrequenz
+als die eingelagerten besitzen, würden nach kurzer Zeit jedoch trotzdem in das Set gelangen, da die Frequenz des Dekrementierens größer wäre als die des
+Inkrementierens. Der Algorithmus ist in Abbildung \ref{img:zeit} mit dem Zugriffsvektor $\{2,7,9,1,2,7,8,9,8,8,1 \}$ für einen Startwert von $s=1$, einem
+Maximalwert von $m=4$ und einem Inkrement von $i=1$ dargestellt. Der zum jeweiligen Zeitpunkt im Cache gehaltene Block ist gelb hinterlegt und der momentane
+Zählerstand grün. Die Iterationslänge von maximal der Setlänge ist zu den Zeitpunkten $t=5$ und $t=7$ zu erkennen.
+
+Mit dieser Architektur lässt sich durch den Parameter $i$ die Tendenz Richtung \ac{LRU} bzw. \ac{LFU} bestimmen. Je größer dieser Wert ist, desto
+näher liegt der Algorithmus an der \ac{LRU} Strategie, da der Zähler quasi als Positionsplatz für die nächste Verdrängung gilt, denn je größer der Zählerwert,
+desto kleiner ist die Wahrscheinlichkeit in naher Zukunft verdrängt zu werden.
+
+\subsection{Schreibstrategie}
+\label{chap5:algo2}
+
+Es gibt zwei grundsätzliche Schreibstrategien für Caches. Zum einen existiert die Write-Through-Strategie, die gleichbedeutend mit einem reinen lesenden Cache
+ist, und zum anderen die Write-Back-Strategie, die gleichbedeutend mit einem lesenden und schreibenden Cache ist. Die beiden Strategien unterscheiden sich im
+Verhalten bei einem Schreibvorgang. Erstere leitet den Schreibvorgang direkt an das gecachte Gerät weiter und markiert die Cacheseite als ungültig. Die
+andere schreibt die Daten nur auf das Cachegerät, wodurch die gültigen Daten auf beiden Geräten verteilt werden. Welche der beiden Strategien besser ist, hängt vom
+jeweiligen Anwendungsfall ab, da aber, wie in Abschnitt \ref{chap3:griffin} angesprochen wurde, das intensive Schreiben für \acp{SSD} ungünstig ist, soll eine
+dritte Strategie als Mittelweg eingesetzt werden -- \textit{Write-Hybrid} genannt. Sie arbeitet in der Art, dass nur Blöcke, die bereits im Cache liegen, nach
+der Write-Back-Strategie geschrieben werden. Blöcke, die neu eingelagert werden müssten, werden nach der Write-Through-Strategie geschrieben. Die Idee, die hinter
+dieser Vorgehensweise steht, ist, dass Daten, die neu erstellt werden, meist sequentiell geschrieben werden. Da Festplatten beim sequentiellen Lesen und
+Schreiben kaum Geschwindigkeitsunterschiede aufweisen, ist es möglich, Daten ohne größeren Geschwindigkeitsverlust auf die Festplatte zu schreiben. Da außerdem
+davon ausgegangen werden kann, dass die Blöcke bei einem nicht komplett gefüllten Quellmedium zuvor lange nicht genutzt worden sind, sind diese auch nicht im
+Cache enthalten.

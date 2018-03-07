@@ -1,0 +1,31 @@
+\begin{tikzpicture}\titleFont
+	\begin{axis}[legend columns = 1,
+				 legend style = {at={(0.05,0.6)},anchor=west, draw=none, font=\small},
+				 legend cell align = {left},
+				 xmin = 1979.5,
+				 xmax = 2000.5,
+				 ymin = 100,
+				 ymax = 1500000,
+				 ymode = log,
+				 width = \textwidth,
+				 height = 0.6\textwidth,
+				 xlabel = {\textbf{Jahr}}, 
+				 ylabel = {\textbf{Relative Leistung}},
+				 cycle list name = Dark2,
+				 xtick=data, 
+				 xtick pos=left,
+				 xticklabel style={rotate=90, /pgf/number format/1000 sep={}},
+				 ytick = {100,1000,10000,100000,1000000},
+				 yticklabels = {100\,\%,1\,000\,\%,10\,000\,\%,100\,000\,\%,1\,000\,000\,\%},
+				 ytick style={draw=none},
+				 ymajorgrids = true
+		]
+
+		\addplot+[smooth, line width=2pt] table [col sep=comma,x={year},y={dram}]{figures/chapter1/ram-cpu.dat};
+		\addlegendentry{DRAM}
+		\addplot+[smooth, line width=2pt] table [col sep=comma,x={year},y={cpu_slow}]{figures/chapter1/ram-cpu.dat};
+		\addlegendentry{CPU (langsam)}
+		\addplot+[smooth, line width=2pt] table [col sep=comma,x={year},y={cpu_fast}]{figures/chapter1/ram-cpu.dat};
+		\addlegendentry{CPU (schnell)}
+	\end{axis}
+\end{tikzpicture}

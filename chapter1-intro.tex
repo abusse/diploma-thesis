@@ -1,0 +1,127 @@
+\chapter{Einführung}
+\label{chap1}
+
+Heutige Rechensysteme haben einen Stand erreicht, in dem pro Sekunde mehrere Gigabyte Daten verarbeitet werden können. Diese Entwicklung bringt jedoch das
+Problem mit sich, dass die Daten dem Prozessor schnell genug zur Verfügung gestellt werden müssen. Zu Beginn der elektronischen Datenverarbeitung hatten
+Prozessoren eine Verarbeitungsgeschwindigkeit, die mit den Leseraten der damaligen Speichermedien wie z.B. Lochkarten gleichzusetzen waren. Auf Grund zunehmender
+Miniaturisierung entwickelten sich jedoch die Prozessoren rasant weiter. Sie folgten hierbei dem \textsc{Moore}schen Gesetz, welches besagt, dass sich die
+Komplexität integrierter Schaltkreise alle 18 Monate verdoppelt und dadurch auch die Rechenleistung pro Chipfläche exponentiell zunimmt.
+
+Im Gegensatz zur schnellen Entwicklung auf dem Prozessormarkt stand  die Entwicklung im Bereich der Speichertechnik. Die Lochkarten wurden durch schneller
+lesbare Magnetbänder verdrängt und diese wiederum später durch Magnetplatten bzw. Festplatten ersetzt. Dies führte zum einen zu einer enormen Platzersparnis, zum
+anderen zu einem Geschwindigkeitsgewinn beim Auslesen der Daten. Zwar konnten die Prozessoren mit ausreichend Daten im Sinne der Menge versorgt werden,
+aber die Entwicklung im Bereich der Speichertechnik konnte nicht mit dem exponentiellen Wachstum der Prozessorgeschwindigkeit mithalten. Dies führte zu großen
+Problemen, weil die zu verarbeitenden Daten nicht schnell genug für die Verarbeitung durch den Prozessor zur Verfügung gestellt werden konnten.
+
+Neben der Speichermöglichkeit auf Lochkarten und magnetischen Medien existierte weiterhin die Möglichkeit, Speicher in Form von Halbleitern zu realisieren. In
+der Praxis hatte dies jedoch die Nachteile, dass selbst kleine Speichermengen extrem teuer waren und Daten sich nur flüchtig speichern ließen. Deshalb kamen
+Halbleiterspeicher als Massenspeicher nicht in Frage. Allerdings lässt sich bereits mit einer kleinen Menge dieser Art von Speichern die Eigenschaft der
+Lokalität der meisten Programme ausnutzen. Lokalität bedeutet hierbei, dass Programmteile häufig wieder verwendet werden und sich ggf. nur die zu bearbeitenden Daten
+ändern. Genau diese Daten lassen sich gut im flüchtigen Halbleiterspeicher halten, der heute allgemein als Haupt- oder Arbeitsspeicher bezeichnet wird. Dies
+funktionierte zunächst sehr gut, da der Speicher schneller war als die verfügbaren Prozessoren, jedoch entwickelten sich nachfolgend auch hier die Prozessoren
+schneller weiter als der Speicher, wie Abbildung \ref{chap1:ram-cpu} zeigt. Im Diagramm wird die Geschwindigkeit von Prozessoren mit dem hauptsächlich für
+Arbeisspeicher verwendeten Halbleiterspeicher DRAM verglichen.
+
+\newpage
+
+\begin{figure}[t!]\centering
+    \includetikz[0.75]{figures/chapter1/ram-cpu}%
+    \caption[Entwicklung der Geschwindigkeit von Prozessoren und Speicher]{Entwicklung der Geschwindigkeit von Prozessoren und Speicher (nach~\textcite[180]{intro1})}
+    \label{chap1:ram-cpu}
+\end{figure}
+
+\begin{figure}[b!]\centering
+    \includetikz[0.85]{figures/chapter1/hierarchy_default}%
+    \caption[Speicherhierarchie]{Speicherhierarchie (nach~\textcite[45]{stallings:os})}
+    \label{chap1:mem1}
+\end{figure}
+
+Das Problem der auseinanderdriftenden Geschwindigkeiten, das im Diagramm deutlich sichtbar wird, ist jedoch nicht primär technologischer sondern ökonomischer
+Natur. Halbleiterspeicher profitieren ebenso wie Prozessoren von der steigenden Integrationsdichte. Dabei muss beachtet werden, dass die Kosten für die
+Produktion proportional mit der Geschwindigkeit des Speichers steigen. Es ist zwar denkbar, Arbeitsspeicher mit ausreichender Geschwindigkeit zu produzieren,
+dies war und ist ökonomisch jedoch nicht sinnvoll. Vielmehr führte es dazu, dass zusätzlich zum Arbeitsspeicher ein weiterer Halbleiterspeicher mit einer
+geringeren Kapazität aber besserer Leistung und anderer Funktionalität in Rechnersysteme integriert wurde. Dieser als Cache bezeichnete Speicher wird, anders
+als der Arbeitsspeicher, nicht vom Benutzer verwaltet sondern von der Hardware selbst. Hierbei sollte angemerkt werden, dass es sich meistens bei dem Benutzer nicht
+direkt um den Endnutzer sondern meist um das Betriebssystem handelt. Folglich ist der Cache dem Benutzer gegenüber vollkommen transparent. Da das
+Konzept eines einfachen Caches zu einem bestimmten Zeitpunkt auch nicht mehr ausreichte, wurden mehrere Cachestufen mit unterschiedlichen Geschwindigkeiten
+integriert, so dass es zu einer Speicherhierarchie kam, wie sie in Abbildung \ref{chap1:mem1} zu sehen ist. Dabei kann festgestellt werden, dass der Cache immer
+wesentlich kleiner ist als der gecachte Speicher, dafür aber für gewöhnlich um Größenordnungen schneller.
+
+In Abbildung \ref{chap1:mem1} werden neben den bereits aufgeführten Speicherarten optische Speichermedien genannt. Diese setzten sich Anfang der 1990er Jahren
+zum Transport von Daten zwischen Rechensystemen und zum Anfertigen von Sicherheitskopien neben Bandlaufwerken durch. Des Weiteren gilt es zu beachten, dass in
+der Abbildung ein Trade-off zwischen Speicherplatz und Kosten auf der einen Seite und Datendurchsatz und Zugriffszeit auf der anderen Seite zu erkennen ist,
+welcher vertikal in der Hierarchie verläuft. Das Prinzip dieser Speicherhierarchie hat sich seit längerem durchgesetzt und stellt die momentan übliche
+Herangehensweise bei der Architektur eines Rechners dar. Die Hierarchie weist jedoch ein Defizit auf, welches bis in die heutige Zeit zunehmend markanter wurde.
+Es besteht eine Lücke bei der Zugriffszeit zwischen Halbleiterspeicher und Magnetspeicher. Diese ist mehrere Dekaden groß, wie in Abbildung \ref{img:gab} zu
+erkennen ist.
+
+\begin{figure}[t!]\centering\vspace{5mm}
+    \includetikz{figures/chapter1/memory_technologies}%
+    \caption[Vergleich gebräuchlicher Speichertechnologien]{\mbox{Vergleich gebräuchlicher Speichertechnologien (nach \textcite[245]{info2})}}
+    \label{img:gab}
+\end{figure}
+
+Neben dem bereits erwähnten flüchtigen Halbleiterspeicher wurden in den 1980er Jahren nichtflüchtige Halbleiterspeicher entwickelt. Da diese jedoch wesentlich
+langsamer als flüchtige Halbleiterspeicher sind, können sie nicht als Ersatz für die flüchtigen Hauptspeicher dienen. Des Weiteren hatte er ökonomisch ähnliche
+Nachteile wie der flüchtige Speicher, so dass er ebenfalls nicht als Ersatz für Magnetscheiben basierte Festplatten dienen konnte. Er fand zunächst seine
+Anwendung in eingebetteten Geräten, setzte sich jedoch Mitte der 1990er Jahre durch die aufkommende Digitalfotografie auch als Wechselspeichermedium durch, da
+hierbei auf Grund der Größe und physikalischen Belastungen weder optische noch magnetische Speichermedien geeignet waren. Der hierfür verwendete
+Halbleiterspeicher wird als Flashspeicher bezeichnet. Neben den hauptsächlich für die Digitalfotografie entwickelten Speicherkarten kamen Ende der 1990er Jahre
+USB-basierte Flashspeichermedien auf den Markt, die bis heute im Begriff sind, optische Speichermedien für den Datentransport zu ersetzen.
+
+In den letzten Jahren gab es allerdings eine neue Entwicklung. Da Flashspeicher auch dem \textsc{Moore}schen Gesetz unterliegen, sind die Preise pro Byte
+schnell gesunken und die Leistung gleichzeitig gestiegen. Aus diesem Grund sind seit ein paar Jahren Flashspeicher basierte Festplatten - so genannte \acp{SSD} - auf dem
+Markt. Also lässt sich die Speicherhierarchie zunächst wie in Abbildung \ref{chap1:mem2} gezeigt erweitern.
+
+\begin{figure}[t]\centering
+	\subfigure[]{
+		\includetikz[0.85]{figures/chapter1/hierarchy_new1}%
+		\label{chap1:mem2}
+	}
+	\hfill
+	\subfigure[]{
+		\includetikz[0.85]{figures/chapter1/hierarchy_new2}%
+		\label{chap1:mem3}
+	}
+	\caption[Erweiterte Speicherhierachien]{Erweiterte Speicherhierachien}
+\end{figure}
+
+\acp{SSD} haben jedoch andere Eigenschaften als klassische Festplatten. Sie sind zwar nur moderat schneller in Bezug auf den Datendurchsatz jedoch um
+Größenordnungen schneller in Bezug auf die Zugriffszeit. Auf Grund dieser Eigenschaft können sie die technologische Lücke, wie sie in Abbildung \ref{img:gab}
+dargestellt ist, schließen. Wenn nun noch vor Augen geführt wird, dass auf bestimmte Arten von Daten wie z.B. Programmdaten hauptsächlich ungeordnet
+zugegriffen wird, kann leicht erkannt werden, dass \acp{SSD} Festplatten in diesem Bereich signifikant überlegen sind. Unglücklicherweise übersteigen die Kosten
+pro Byte \ac{SSD}-Speicher die Kosten pro Byte Festplattenspeicher noch immer signifikant. Dies ist deutlich ablesbar in Tabelle \ref{chap1:preise}, in der
+die Preise gängiger Low- bis High-End-Festplatten mit Preisen von Low- bis High-End-\acp{SSD} verglichen werden. Aus diesem Grund kann auf Festplatten noch
+nicht komplett verzichtet werden.
+
+\begin{table}[b]\centering
+  \caption{Preise ausgewählter Festplatten und SSDs (Quelle: Geizhals Preisvergleich, Stand: 13.05.2010)} 
+	\begin{tabular}{l|r}
+	Produkt & Preis pro TB in Euro \\ \hline
+	\multicolumn{2}{c}{\textbf{Festplatten}} \\ \hline
+	Samsung EcoGreen F2 1500GB (5400rpm) & 48,30 \\ \hline
+	Seagate Barracuda 7200.11 1500GB (7200rpm) & 54,32 \\ \hline
+	Western Digital VelociRaptor 600GB (10000rpm) & 431,65 \\ \hline
+	Hitachi Ultrastar 15K600 600GB (15000rpm) & 665,00 \\ \hline
+	\multicolumn{2}{c}{\textbf{\acp{SSD}}} \\ \hline
+	BestMedia Platinum MyDrive 128GB & 1373,18 \\ \hline
+	Kingston SSDNow V-Series G2 128GB & 1796,10 \\ \hline
+	Intel X25-M G2 Postville 160GB & 2295,80 \\ \hline
+	Intel X25-E 64GB & 9967,62 \\  \hline
+	\end{tabular}
+	\label{chap1:preise}
+\end{table}
+
+\newpage
+
+Um dennoch die Möglichkeiten und Vorteile der neuen Technologie nutzen zu können, muss der Nutzer die Daten, auf die hauptsächlich sequenziell
+zugegriffen wird, von den Daten manuell trennen, auf die hauptsächlich ungeordnet zugegriffen wird, und auf die entsprechend passenden Speichermedien verteilen.
+Da dies sehr umständlich und für unerfahrene Nutzer kaum machbar ist, wäre es sinnvoller \acp{SSD} nicht als kompletten Ersatz für herkömmliche Festplatten zu
+nutzen, sondern als Cache, genau wie es bei Hauptspeicher und (Prozessor)-Cache der Fall ist. Es würde sich dadurch eine veränderte Speicherhierarchie
+ergeben, wie sie in Abbildung \ref{chap1:mem3} zu sehen ist.
+
+Diese Arbeit soll sich mit der Möglichkeit der Realisierung dieses Caches auseinandersetzen. Hierfür wird zunächst in Kapitel \ref{chap2} das technische Umfeld
+näher untersucht und dabei die Funktionsweise von Festplatten und \acp{SSD} erläutert. Das darauf folgende Kapitel \ref {chap3} setzt sich mit Arbeiten
+auseinander, die für diese Arbeit relevant sind. Anschließend wird in Kapitel \ref{chap4} eine Problemstellung mit konkreten Anforderungen formuliert. Sodann
+wird in Kapitel \ref{chap5} die Architektur des implementierten Caches vorgestellt und die Implementierung in Kapitel \ref{chap6} näher erläutert. Anschließend
+wird in Kapitel \ref{chap7} die Leistungsfähigkeit des Caches untersucht und ein Ausblick auf zukünftige Arbeitsfelder in Kapitel \ref{chap8} gegeben.

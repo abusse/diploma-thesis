@@ -1,0 +1,20 @@
+\begin{tikzpicture}[node distance=1.33cm]\titleFont
+	\node[draw, align=center, fill=myBlue, minimum width=3cm, minimum height=1cm]								(file)  {Dateisystem};
+	\node[draw, align=center, fill=myOtherYellow, minimum width=3cm, minimum height=1cm, below = of file]		(dm)  	{Device-Mapper};
+	\node[draw, align=center, fill=myGray, minimum width=3cm, minimum height=1cm, below = of dm, xshift=-2cm]	(hdd)  	{Festplatte};
+	\node[draw, align=center, fill=myGray, minimum width=3cm, minimum height=1cm, below = of dm, xshift=2cm]	(ssd)  	{Solid State\\Drive};
+	\node[draw, align=center, fill=myOrange, minimum width=3cm, minimum height=1cm, below = of hdd, xshift=2cm]	(cache)	{Cache-Modul\\Seitentausch};
+	\node[draw, align=center, fill=myOrange, minimum width=3cm, minimum height=1cm, right = of dm]				(map)  	{Cache-Modul\\\texttt{map}-Funktion};
+
+	\draw[<->, line width=1pt, myBlue]  (file)  -- (dm);
+	\draw[<->, line width=1pt, myBlue]  (dm)  -- (hdd.north);
+	\draw[<->, line width=1pt, myBlue]  (dm)  -- (ssd.north);
+	\draw[<->, line width=1pt, myGreen] (hdd.south)  -- (cache);
+	\draw[<->, line width=1pt, myGreen] (ssd.south)  -- (cache);
+	\draw[<->, line width=1pt, dashed, red!66!black] (dm)  -- (map);
+	\draw[->,  line width=1pt, dashed, red!66!black] (map)  |- (cache);
+
+	\draw[<->, line width=1pt, myBlue]				(file.east) ++(1.25,0.33)  -- ++(0.75,0) node[anchor=west, black] {\footnotesize Nutzer initialisierte BIOs};
+	\draw[<->, line width=1pt, myGreen]				(file.east) ++(1.25,-0.17) -- ++(0.75,0) node[anchor=west, black] {\footnotesize Cache initialisierte BIOs};
+	\draw[<->, line width=1pt, dashed, red!66!black](file.east) ++(1.25,-0.66) -- ++(0.75,0) node[anchor=west, black] {\footnotesize Kontrollfluss};
+\end{tikzpicture}

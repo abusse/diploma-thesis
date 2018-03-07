@@ -1,0 +1,17 @@
+/* Structure for a kcached job */
+struct kcached_job {
+	struct list_head list;
+	struct cache_c *dmc;
+	struct bio *bio;	/* Original bio */
+	struct dm_io_region src;
+	struct dm_io_region dest;
+	struct cacheblock *cacheblock;
+	int rw;
+	/*
+	 * When the original bio is not aligned with cache blocks,
+	 * we need extra bvecs and pages for padding.
+	 */
+	struct bio_vec *bvec;
+	unsigned int nr_pages;
+	struct page_list *pages;
+};

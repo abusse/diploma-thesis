@@ -1,0 +1,36 @@
+\begin{tikzpicture}\titleFont
+    \begin{axis}[
+        xbar,
+        /pgf/bar shift=0pt,
+        ytick={0,...,3},
+        ytick style={draw=none},
+        yticklabel style={/pgf/number format/fixed},
+        axis y line*=none,
+        axis x line*=bottom,
+        xtick={15,20,25,30},
+        width=0.75\textwidth,
+        bar width=6mm,
+        y=10mm,
+        xmin=15,
+        xmax=33,
+        enlarge y limits={abs=0.625},
+        xmajorgrids=true,
+        every axis plot/.append style={fill},
+        nodes near coords={\,\pgfmathprintnumber{\rawx}~Sekunden},
+        nodes near coords style = {anchor=west, black, shift={(axis direction cs:-\pgfkeysvalueof{/data point/x}+\pgfkeysvalueof{/pgfplots/xmin},0)}},
+        visualization depends on=x \as \rawx,
+        x axis line style={->},
+        yticklabels={
+            {Cache 2},
+            {Cache 1},
+            {SSD},
+            {HDD}
+        },
+        xlabel={\textbf{Bootzeit in Sekunden}}
+    ]
+        \addplot[myBlue]  coordinates {(27,3)};
+        \addplot[myRed]   coordinates {(22,2)};
+        \addplot[myGreen] coordinates {(31,1)};
+        \addplot[myGreen] coordinates {(24,0)};
+    \end{axis}  
+\end{tikzpicture}

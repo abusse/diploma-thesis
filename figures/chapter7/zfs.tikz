@@ -1,0 +1,26 @@
+\begin{tikzpicture}\titleFont
+    \begin{axis}[
+        ybar=0.5cm,
+        ytick style={draw=none},
+        yticklabel style={/pgf/number format/fixed},
+        axis y line*=none,
+        axis x line*=bottom,
+        symbolic x coords={HDD,SSD,Cache},
+        width=0.75\textwidth,
+        height=8cm,
+        ymin=0,
+        ymax=3000,
+        ymajorgrids=true,
+        bar width=7mm,
+        x=3cm,
+        enlarge x limits=0.25,
+        every axis plot/.append style={fill},
+        ylabel={\textbf{Laufzeit in Sekunden}},
+        tick label style={/pgf/number format/.cd,1000 sep={}},
+        xtick=data,
+    ]
+        \addplot[myBlue]  coordinates {(HDD,2716.3564) (SSD,558.88) (Cache,1473.192)};
+        \addplot[myGreen] coordinates {(HDD,2721) (SSD,563.71) (Cache,1723.14)};
+        \legend{ext3, ZFS};
+    \end{axis}  
+\end{tikzpicture}

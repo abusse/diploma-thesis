@@ -1,0 +1,206 @@
+\chapter{Verwandte Arbeiten}
+\label{chap3}
+
+Vor dem Formulieren einer konkreten Aufgabenstellung gilt es, sich mit Arbeiten auseinander zu setzen, die sich zum einen mit Caching und zum anderen mit dem
+Zusammenspiel von Flash- und Magnetspeicher beschäftigen. Dazu werden in diesem Kapitel verschiedene Konzepte betrachtet. Abschnitt \ref{chap3:zfs}
+thematisiert das von Sun Microsystems entwickelte ZFS, bei dem eine Cacheimplementierung auf der Dateisystemebene vorliegt. Unter Punkt \ref{chap3:readyboost}
+wird die proprietäre ReadyBoost-Technologie von Microsoft betrachtet, welche die Nutzung eines USB-Flash-Speichermediums als Cache vorsieht. Im Anschluss daran
+wird in Abschnitt \ref{chap3:itm} auf eine flashbasierte Cacheimplementierung der Firma Intel eingegangen, welche ein dediziertes Hardwaremodul nutzt. In
+Abschnitt \ref{chap3:griffin} wird ein Artikel angesprochen, in dem der gegenteilige Ansatz gewählt wird und ein \ac{SSD} durch eine Festplatte gecacht wird. Die
+Erwähnung dieses Artikels soll verdeutlichen, dass auch das nahezu komplett gegenteilige Vorgehen erforscht wird. In Abschitt \ref{chap3:dm-cache} wird auf eine
+Forschungsarbeit eingegangen, die das Cachen von Netzwerkdaten auf Festplatten betrachtet. Dies ist für diese Arbeit von Relevanz, da im Artikel zum einen von
+Blockgeräten ausgegangen wird und zum anderen ein ähnliches Problem angesprochen wird, was in einer tieferen Ebenen der Speicherhierarchie liegt. Zum
+Abschluss dieses Kapitels wird in Abschnitt \ref{chap3:ersetzen} ein Artikel betrachtet, welcher sich grundsätzlich mit Ersetzungsstrategien für Caches
+beschäftigt. Die Auswertung dieses Artikels ist wichtig, da die Wahl einer geeigneten Strategie von erheblicher Bedeutung für diese Arbeit ist.
+
+\section{Sun Microsystems' ZFS}
+\label{chap3:zfs}
+
+ZFS ist ein von Sun Microsystems entwickeltes Dateisystem, welches primär für die Verwendung in Server- und Rechenzentren ausgelegt ist. Es ist kein
+klassisches Dateisystem, welches auf die Verwaltung von Daten auf einem einzelnen logischen oder physischen Gerät beschränkt ist, sondern eines, das die
+Verwaltung von Verbänden von Blockgeräten ermöglicht. ZFS organisiert die Blockgeräte hierfür in so genannten Pools, wobei diese als ausfallsicherheitssteigernde
+\acp{RAID} organisiert werden können. Sollten ausreichend Geräte zur Verfügung stehen, werden zur Steigerung der Geschwindigkeit die Daten auf den Geräten
+parallel verteilt. Geräte können hierbei jederzeit zu einem Pool hinzugefügt werden, um den Speicherplatz, die Datensicherheit oder die Leistung zu erhöhen.
+
+Die Artikel von \textcite{zfs1} und \textcite{zfs2} setzen sich mit einem weiteren Mechanismus von ZFS auseinander. Sie betrachten die Möglichkeit, ein
+Blockgerät als Cache zu benutzen. Ein Blockgerät kann hierfür zu einem Pool hinzugefügt werden und als Cache markiert werden, wobei diese Blockgeräte
+performanter sein sollten als die zu cachenden Geräte. Aus diesem Grund kommen hierfür z.B. \acp{SSD} in Frage.
+
+\Citeauthor{zfs2} vergleicht nun die Zugriffszeiten auf das ZFS-Dateisystem in Abhängigkeit davon, ob die Anfrage aus dem Arbeitsspeicher des Systems,
+des \ac{SSD}s oder der Festplatte bedient wird. Die Ergebnisse finden sich im Diagramm in Abbildung \ref{zfs2}. Es ist klar zu erkennen, dass die Zugriffszeiten
+um Größenordnungen auseinander liegen. Somit wird deutlich, dass die Nutzung von \acp{SSD} als zusätzlicher Cache aus Sicht der Leistung sinnvoll ist.
+
+\begin{figure}[h]\centering
+	\includetikz{figures/chapter3/zfs}%
+	\caption[Zugriffszeit auf den ZFS Pool in Abhängigkeit vom bedienenden Systemteil]{Zugriffszeit auf den ZFS Pool in Abhängigkeit vom bedienenden Systemteil
+	(nach \textcite{zfs2})}
+	\label{zfs2}
+\end{figure}
+
+Der Artikel von \textcite{zfs1} setzt sich mit dem ökonomischen Aspekt der Nutzung von \acp{SSD} als Cache auseinander. Es wird durch eine Beispielrechnung
+veranschaulicht, wie groß die Ersparnis in Anschaffung und Stromverbrauch und somit indirekt der Betriebskosten durch die Nutzung von \acp{SSD} als Cache für ein
+gegebenes Szenario ist. Der Artikel kommt dabei zu dem Schluss, dass die Anschaffung des \ac{SSD} gestützten Systems bei gleichbleibender Leistung 64\%
+günstiger und der Stromverbrauch 77\% geringer ist. Dabei gilt es jedoch anzumerken, dass für den Vergleich Serverfestplatten genutzt wurden, welche einen
+Verbrauch von 17,5 Watt hatten. Bei der Nutzung von Desktop- oder Notebookfestplatten mit einem Verbrauch von ca. 3-8 Watt wäre der Unterschied geringer
+ausgefallen, jedoch hätte es wahrscheinlich einen deutlichen Leistungsunterschied gegeben.
+
+\section{Microsofts ReadyBoost}
+\label{chap3:readyboost}
+
+Im Patent \cite{patent:20060090031} wird eine Technik zum Cachen von Plattensektoren auf einem Wechselmedium beschrieben. Diese Technik wird von Microsoft unter
+der Bezeichnung \textit{ReadyBoost} vermarktet. Die Technik dient in erster Linie zur Leistungssteigerung älterer Systeme, die eine geringe
+Menge an Hauptspeicher aufweisen. Bei diesen Systemen ist das Cachen von Daten im Hauptspeicher, wie in der Einleitung beschrieben wurde, kaum möglich, so dass
+ein intensives Arbeiten auf dem Plattengerät erforderlich ist. Das Patent beschreibt hierbei die Möglichkeit, diesen Umstand zu mildern, indem z.B. ein günstiges
+USB-Speichermedium zum Zwischenspeichern der Daten eingesetzt wird. Dies spiegelt nochmals die veränderte Speicherhierarchie wieder, welche in der Einleitung
+gezeigt wurde. Die Ausarbeitung kommt dabei zu teilweise sehr hohen Leistungssteigerungen, wie beispielhaft der Tabelle \ref{table:readyboost} entnommen
+werden kann.
+
+Hierbei wurden die Zugriffsmuster typischer Desktopsysteme simuliert. Dabei wurden als Cache USB-Speichermedien mit verschiedenen Größen eingesetzt. Es ist zu
+erkennen, dass die Lesezeit des Datensatzes sich auf dem mit 512MB Arbeitsspeicher ausgestatteten System 1 auf 18\% reduzierte.
+
+\begin{table}[t]\centering\small
+	\newcolumntype{C}[1]{>{\centering\arraybackslash}m{#1}}
+	\caption{Geschwindigkeitsgewinn für Endnutzersysteme bei der Nutzung von ReadyBoost (Quelle: \textcite{patent:20060090031})}\vspace{0.25cm}
+  \begin{tabular}{lC{2.5cm}cccccc}
+	System & Lesezeit in Sek. der simulierten HDD & \multicolumn{6}{C{8cm}}{Prozentsatz der simulierten Lesezeit mit einem USB2-Speichermedium der Größe:}\\
+	 &  & 0MB & 32MB & 64MB & 128MB & 256MB & 512MB \\ \hline
+	System 1 (128MB) & 1259 & 100\% & 89\% & 70\% & 37\% & 18\% & 18\% \\
+	System 2 (128MB) & 1011 & 100\% & 90\% & 70\% & 38\% & 22\% & 22\% \\
+	System 3 (128MB) & 2159 & 100\% & 88\% & 72\% & 44\% & 25\% & 20\% \\
+	System 4 (128MB) &  866 & 100\% & 90\% & 80\% & 63\% & 48\% & 37\% \\
+	System 5 (256MB) & 1747 & 100\% & 92\% & 85\% & 70\% & 52\% & 40\% \\
+	System 6 (256MB) & 2187 & 100\% & 94\% & 87\% & 76\% & 66\% & 57\% \\
+	\end{tabular}
+	\label{table:readyboost}
+\end{table}
+
+\section{Intels Turbo Memory}
+\label{chap3:itm}
+
+\Textcite{intel:turbo} beschreiben die \ac{ITM} Technologie. Bei \ac{ITM} handelt es sich um ein Hard-/Software-Codesign. Auf der
+Hardwareseite finden sich ein NAND-Flash-Speicher, ein Flash-Controller und ein sogenanntes OROM, welches im Fehlerfall aktiv wird. Das Hardwaremodul wird über
+den PCI-Express-Bus an das System angebunden. Auf der Softwareseite befindet sich der \ac{ITM}-Treiber, welcher die Ansteuerung des Hardwaremoduls übernimmt, die
+Schnittstelle für das Betriebssystem zur Verfügung stellt und Funktionen, die die Nutzung des Hardwaremoduls zum einen als \ac{SSD} zulassen und zum anderen als
+Cache für Festplatten. Dieser Sachverhalt ist in Abbildung \ref{chap3:intel1} zu sehen.
+
+Bei \ac{ITM} handelt es sich um einen Lese-/Schreibcache, der auch nach einem Neustart erhalten bleibt. Aus diesem Grund sind besondere Maßnahmen für die
+Ausfallsicherheit zu treffen, da die aktuellen Daten nicht einheitlich auf einem Gerät zu finden sind, sondern auf der Festplatte und dem Cache verteilt sind.
+Intel hat den bereits von \textcite{dm-cache} angesprochenen Ansatz gewählt, die Metadaten des Caches sowohl im Arbeitsspeicher als auch im Flashspeicher vorzuhalten.
+Für die Verwaltung der Metadaten werden pro vier Kilobyte Cacheblock 40 Byte Daten im Hauptspeicher benötigt. Es liegt also ein Verhältnis von Speicherverbrauch
+zu Cachegröße von ca. 1:100 vor. Weiterhin wird auf das Problem hingewiesen, dass durch die Einführung eines persistenten Caches gleichzeitig zwischen zwei
+persistenten Speicherebenen eine nicht-persistente in Form des Festplattencaches eingefügt wird (Abbildung \ref{chap3:intel2}). Dadurch erhöht sich die Gefahr von
+Datenverlust bei einem Systemfehler.
+
+\begin{figure}[t!]\centering
+  \includetikz[0.8]{figures/chapter3/itm1}%
+  \caption[Blockdiagramm des Intel Turbo Memory]{Blockdiagramm des Intel Turbo Memory (nach \textcite{intel:turbo})}
+  \label{chap3:intel1}
+\end{figure}
+
+\begin{figure}[b!]\centering
+	\includetikz[0.85]{figures/chapter3/itm2}%
+	\caption[Speicherhierarchie mit Intel Turbo Memory]{Speicherhierarchie mit Intel Turbo Memory (nach \textcite{intel:turbo})}
+	\label{chap3:intel2}
+\end{figure}
+
+Dies kann zu Problemen im Fehlerfall führen, wenn das Schreiben der Daten vom Cache an das Betriebssystem bereits bestätigt wurde, aber noch nicht sicher ist,
+ob der Schreibvorgang zwischen Cache und Festplatte korrekt abgeschlossen wurde. Zur Lösung dieses Problems wird im Artikel vorgeschlagen, den Festplattencontroller
+vor der Aktualisierung der Metadaten des Caches explizit anzuweisen, den Festplattencache zu leeren.
+
+Des Weiteren wird auf das Problem der Separierung von Festplatte und Cache hingewiesen, was vor allem bei einem Write-Back-Cache auftritt. Um das
+Problem zu lösen, werden beim Herunterfahren des Rechners grundsätzlich alle als verändert markierten Blöcke des Caches auf die Festplatte zurückgeschrieben.
+Sollte dies durch einen Systemfehler nicht möglich sein, werden die Daten beim Starten des Rechners durch das OROM zurück auf die Festplatte geschrieben, ehe der
+normale Bootvorgang startet. Diese Funktionalität des \ac{ITM} ist der Grund dafür, dass es sich bei \ac{ITM} um ein Hard-/Software-Codesign handelt. Die Daten
+werden unabhängig vom Gerätetreiber selbständig von der Hardware kopiert. Sollten Festplatte und Cache jedoch nach einem Systemfehler separiert werden, sind
+besondere Maßnahmen zu treffen. Von den Autoren wird hierfür auf Patent~\cite{patent:20070233947} verwiesen.
+
+Weiterhin wird in dem Artikel auf Caching-Strategien eingegangen. Es wird ausgeführt, dass es wenig sinnvoll ist, lange Lese-/Schreib-Sequenzen zu cachen. Als
+effektiver wird angesehen, die Daten zu cachen, die ungeordnet angefragt werden. Um festzustellen, ob Daten zu der einen oder anderen Art gehören, benutzen die
+Autoren die Größe der jeweiligen Datenanfrage. Außerdem sind sie der Meinung, es sei nur sinnvoll Daten zu cachen, die mehr als einmal wiederbenutzt werden. Von
+den Autoren wird hierbei darauf hingewiesen, dass dies besonders beim Pagefile\footnote{Bildet die Grundlage des virtuellen Speichers eines
+Betriebssystems und enthält die ausgelagerten Seiten.} des Betriebssystems der Fall ist.
+
+Die Autoren weisen in weiteren Teilen des Artikels außerdem darauf hin, dass die Hit-Rate\footnote{Ist das Verhältnis zwischen der Gesamtzahl der Anfragen
+und den aus dem Cache bedienten Anfragen.} kein gutes Kriterium ist, um die Qualität und Leistung des Caches zu beurteilen. Sinnvoller sei es, die Länge der
+aufeinanderfolgenden Anfragen zu messen, welche nicht von der Festplatte sondern vom Cache bedient werden können.
+
+Die Autoren dieses Artikels kommen zu dem Schluss, dass das Nutzen von Flash-Speicher zum Cachen von Festplatten sinnvoll ist. Ein Auszug ihrer Ergebnisse
+bei der Nutzung von \ac{ITM} findet sich in Tabelle \ref{chap3:intel:table}.
+
+\begin{table}[H]\centering\small
+	\newcolumntype{C}[1]{>{\centering\arraybackslash}m{#1}}
+	\caption{Ergebnisse der Nutzung von ITM (Quelle: \textcite{intel:turbo})} \vspace{0.25cm}
+  \begin{tabular}{p{9cm}|l}
+	\multicolumn{1}{c|}{\textbf{Art der Systemnutzung}} & \multicolumn{1}{c}{\textbf{Leistungsgewinn}} \\ \hline
+	Arbeit mit Microsoft Office mit einer speicherintensiven Anwendung im Hintergrund & Verdoppelte Reaktionszeit \\ \hline
+	Bootzeit bis zum Startmenü & 22\% schneller \\ \hline
+	PCMark05 disk & 20\%ige Verbesserung \\ \hline
+	Ein Vorbeiflug an einem Nationalpark mit Google Earth gefolgt von der Nutzung von Adobe Photoshop Elements 5.0 zur Erstellung einer Slideshow, die Bilder
+	desselben Parks zeigt & 2-fache Geschwindigkeit \\  \hline
+	\end{tabular}
+	\label{chap3:intel:table}
+\end{table}
+
+\section{Griffin}
+\label{chap3:griffin}
+
+Das von \textcite{griffin} vorgeschlagene Verfahren nutzt eine Festplatte zum Cachen von \ac{SSD}-Zugriffen, um die Anzahl der Schreibvorgänge auf das \ac{SSD} zu
+verringern. Der Artikel hat auf den ersten Blick wenig mit dem in dieser Arbeit behandelten Thema gemein, ist aber für einige Designentscheidungen trotz alledem
+von Bedeutung. Von den Autoren wird auf das Problem eingegangen, dass bei \acp{SSD} die Anzahl der möglichen Schreibvorgänge begrenzt ist. Aus diesem Grund wird
+vorgeschlagen, statt Schreibvorgänge direkt auf einem \ac{SSD} auszuführen, diese auf einer Festplatte zu cachen. Leistungseinbußen werden hierbei durch die
+Architektur des Caches vermieden. Der Cache wird hierfür in Form eines Logs aufgebaut, so dass neue Schreibvorgänge stets an das Ende des Caches geschrieben
+werden und somit der ggf. ungeordnete Schreibzugriff auf dem \ac{SSD} in einen geordneten auf der Festplatte überführt wird. Da ungeordnete Schreibzugriffe auf
+\acp{SSD} meist langsamer sind als geordnete auf einer Festplatte, sollte es laut der Autoren kaum Leistungsunterschiede geben. Des Weiteren wird der
+Kostenvorteil einer Festplatte gegenüber einem \ac{SSD} genutzt. Durch den Kostenvorteil ist es möglich, dass der Cache größer ist als das Quellgerät.
+Abschließend gehen die Autoren näher auf die von ihnen ausgeführten Tests ein, die neben einer Festplatte als Cache auch das Cachen von \ac{MLC}-\acp{SSD} mit
+Hilfe von \ac{SLC}-\acp{SSD} betrachten.
+
+\section{Dynamic Policy Disk Caching for Storage Networking}
+\label{chap3:dm-cache}
+
+Die Arbeit von \textcite{dm-cache} beschäftigt sich mit dem Cachen von \acp{SAN} auf lokalen Festplatten. Das Thema des Reports hat auf den ersten Blick nichts mit dem
+Thema dieser Arbeit gemein, aber es wird auf die Eigenschaft eines \ac{SAN}s eingegangen, blockbasierend zu sein. Somit wird im Report das Cachen eines
+Blockgeräts durch ein anderes beschrieben, was beim Cachen eines \ac{SSD} durch eine Festplatte ebenfalls der Fall ist. Weiterhin ist der Unterschied bezüglich der Zugriffszeit
+zwischen Festplatte und \acp{SAN} vergleichbar mit der zwischen \acp{SSD} und Festplatten. Im Report wird eine Linux-Kernelerweiterung beschrieben, die die
+Aufgabe des Cachens erfüllt. Da die Erweiterung generell auf logische Blockgeräte zugeschnitten ist, ist sie auch für diese Arbeit relevant und soll somit untersucht
+werden.
+
+Schließlich kommt der Report in Bezug auf \acp{SAN} zu dem Schluss, dass unter der Verwendung der implementierten Erweiterung ein beachtlicher Leistungsgewinn
+zu beobachten ist. Die Laufzeiten der gewählten Benchmarks verringern sich auf bis zu einem Drittel. Weiterhin wird die Ausfallsicherheit des Caches diskutiert.
+Diese Diskussion ist auch für diese Arbeit von Bedeutung. Für die Ausfallsicherheit ist hauptsächlich das Speichern der Metadaten maßgebend. Die gecachten
+Inhalte liegen ohnehin in einem persistenten Speicher, so dass sie beim Ausfall nicht verloren gehen können. Anders sieht es bei den Metadaten aus, da diese aus
+Leistungsgründen im nicht persistenten Arbeitsspeicher gehalten werden und bei einem Ausfall verloren gehen.
+
+\Citeauthor{dm-cache} stellen drei Lösungsmöglichkeiten vor, wobei nur die letzen beiden auch für einen Write-Back-Cache geeignet sind. Die erste Möglichkeit
+besteht im kompletten Neuaufbau des Caches. Die Zweite im zusätzlichen Speichern der Metadaten im persistenten Speicher. Die dritte Möglichkeit ist eine
+Kombination aus den ersten beiden, wobei nur Daten von Cacheblöcken gespeichert werden, die lediglich im Cache aktuell sind.
+
+\section{Ersetzungsstrategien für Caches}
+\label{chap3:ersetzen}
+
+Da ein Cache für gewöhnlich weniger Speicherplatz aufweist als das Quellmedium\footnote{Dies ist das gecachte Medium.}, ist die Frage, welche Daten im Cache
+gehalten werden und welche nicht, von zentraler Bedeutung. Genauer gesagt ist es die Frage, welcher Block bei einem vollen Cache als nächster ersetzt wird. Die
+optimale Vorgehensweise hierfür ist im Verfahren von \textcite{cache1} beschrieben. Es besagt, dass der Block verdrängt wird, auf den in der Zukunft am
+längsten nicht mehr zugegriffen wird. Da dieses Verfahren jedoch Wissen über das zukünftige Verhalten des Systems voraussetzt, es ist nur bei einer
+Offline-Planung\footnote{Das gesamte Verhalten des Systems ist während der Entwurfszeit bekannt.}  einsetzbar. Für eine Online-Planung muss versucht werden, das
+zukünftige Verhalten des Systems vorherzusagen. Die Vorhersage geschieht für gewöhnlich auf Grundlage des vergangenen Verhaltens des Systems. Hierbei liegt die
+Annahme zu Grunde, dass das zukünftige Verhalten dem vergangenen Verhalten ähnelt. Laut \textcite{cache2} gibt es hierbei zwei grundsätzliche Herangehensweisen --
+das \textit{\ac{LRU}}-Prinzip und das \textit{\ac{LFU}}-Prinzip.
+
+Das \ac{LRU}-Prinzip basiert auf der Annahme, dass auf einen Block, auf den bereits sehr lange nicht mehr zugegriffen wurde, auch in Zukunft in absehbarer Zeit
+nicht zugegriffen wird. Dieses Verfahren bedeutet einen relativ geringen Aufwand, da das System lediglich den am längsten nicht genutzten Block bestimmen muss.
+Dies kann z.B. durch eine Liste geschehen, in der bei einem Zugriff auf einen Block dieser immer an den Anfang gesetzt wird. So würde sich der am längsten nicht
+genutzte Block am Ende befinden.
+
+Das \ac{LFU}-Prinzip hingegen basiert auf der Zugriffshäufigkeit bzw. Zugriffsfrequenz. Es geht von der Annahme aus, dass Blöcke, die in der Vergangenheit häufig
+benutzt wurden, auch in der Zukunft häufig benutzt werden. Dieses Verfahren hat im Vergleich zum \ac{LRU}-Algorithmus einen höheren Aufwand, da zu jedem
+Cacheblock Zugriffsstatistiken geführt werden müssen und die Blöcke nach ihrer Zugriffsfrequenz sortiert werden müssen. Zudem besteht das Problem, dass
+Cacheblöcke, auf die in der Vergangenheit oft zugegriffen wurde, lange im Cache verbleiben, auch wenn sie nicht mehr benötigt werden. Ein Beispiel hierfür könnte
+eine gelöschte Datei sein, die zwar in der Vergangenheit oft genutzt wurde, jetzt jedoch nicht mehr existiert und somit die Daten auch im Cache nicht mehr
+benötigt werden.
+
+Von \citeauthor{cache2} wird nun ein Raum von Caching-Strategien postuliert, der von den beiden genannten Strategien aufgespannt wird und diese als Extremfälle
+beinhaltet. Es werden dabei Strategien untersucht, die in diesem Raum liegen und mit den Extremfällen und der optimalen ex-post Lösung verglichen werden. Die
+Autoren kommen zu dem Schluss, dass Strategien, die zwischen \ac{LRU} und \ac{LFU} liegen, meist besser geeignet sind. Weiterhin lassen sich diese flexibel
+implementieren, so dass sich die Strategien durch einen einzigen Parameter Richtung \ac{LRU} oder \ac{LFU} steuern lassen und für ein gegebenes Szenario leicht
+optimieren lassen.
