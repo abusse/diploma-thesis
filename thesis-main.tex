@@ -1,24 +1,18 @@
 % use pdf version 1.4
-\pdfoptionpdfminorversion=5
+\pdfoptionpdfminorversion=4
 
 \documentclass[twoside, 11pt, a4paper]{report} 
 
 \usepackage[utf8]{inputenc}
 
-% Document properties %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Document Metadata %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\def\Title {SSD-basiertes Caching von Blockgeräten}
-\def\Author {Anselm Busse}
-\def\Subject {Diplomarbeit} 
+\def\Author   {Anselm Busse}
+\def\Title    {SSD-basiertes Caching von Blockgeräten}
+\def\Subject  {Diplomarbeit} 
 \def\Keywords {SSD, HDD, Cache, Blockgerät}
 
-\pdfinfo{
-  /Author (Anselm Busse)
-  /Title (SSD-basiertes Caching von Blockger\string\344ten)
-  /Subject (Diplomarbeit)
-  /Keywords (SSD, HDD, Cache, Blockger\string\344t)
-}
 
 % Definitions for conditional document processing %%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -128,6 +122,10 @@
 
 \hypersetup{final,            %links are only inserted in final mode
       %pdfpagemode={UseOutlines},
+      pdfauthor={\Author},%
+      pdftitle={\Title},%
+      pdfsubject={\Subject},%
+      pdfkeywords={\Keywords},%
       bookmarksopen=false,bookmarksopenlevel=0,
       bookmarksnumbered=true,
       hypertexnames=false,
