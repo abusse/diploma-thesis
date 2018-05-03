@@ -1,0 +1,55 @@
+%% Temporarily enlarge this page to push
+%% down the bottom margin
+\pagestyle{empty}
+\mbox{}\clearpage{}
+\vspace*{5mm}
+\begin{center}
+\begin{minipage}{.8\textwidth}
+\titleFont \large
+\Author \newline
+\titleFontBold \Large
+\Title \newline
+\titleFont \normalsize
+
+\setlength{\parskip}{1em}
+
+Diese Arbeit beschäftigt sich mit der Frage, ob es möglich und sinnvoll ist ein
+Solid State Drive (SSD) als Cache für eine herkömmliche Magnetscheiben-basierte
+Festplatte zu nutzen.
+
+In aktuellen Rechnersystemen stellt häufig der Massenspeicher in Form einer
+Festplatte den Flaschenhals des Systems dar. Dies ist darauf zurückzuführen,
+dass Festplatten auf Grund ihres mechanischen Aufbaus eine Zugriffszeit haben,
+die um mehrere Größenordnungen schlechter ist als die der nächsten Stufe in der
+Speicherhierarchie -- dem Arbeitsspeicher. Um dieses Problem zu beseitigen,
+wurde in den letzten Jahren halbleiterbasierter Massenspeicher als Ersatz für
+Festplatten eingeführt, der dieses Defizit nicht besitzt. Diese Laufwerke werden
+unter der Bezeichnung SSD vermarktet. SSDs haben jedoch den Nachteil, dass die
+Kosten pro Byte wesentlich über denen von Festplatten liegen. Darum ist mit
+einer vollständigen Substitution von Festplatten durch SSDs in den kommenden
+Jahren kaum zu rechnen.
+
+Die momentane Situation, die daraus resultiert, ist die, dass Anwender häufig
+genutzte Daten auf einer meist kleinen SSD speichern und die restlichen Daten
+auf einer langsameren Festplatte. Dieses Vorgehen ist für den Nutzer jedoch sehr
+umständlich. Deshalb wird in dieser Arbeit die Nutzung von SSDs als
+transparenter Cache für Festplatten vorgeschlagen. Dadurch würde nur ein
+geringes Eingreifen des Nutzers erforderlich sein und es ihm trotzdem
+ermöglicht, die Vorteile von SSDs zu nutzen.
+
+Es werden im Verlauf dieser Arbeit dafür zunächst die technischen Grundlagen von
+Festplatten und SSDs dargestellt und andere Arbeiten betrachtet, die ein
+ähnliches Konzept verfolgen bzw. für die praktische Realisierung des Cache von
+Bedeutung sind. Auf Grundlage dieser technischen und theoretischen
+Rahmenbedingungen wird eine konkrete Problem- und Aufgabenstellung formuliert.
+Basierend auf dieser wird eine Architektur für einen blockbasierten Cache
+vorgeschlagen, deren konkrete Implementierung ebenfalls in dieser Arbeit
+beispielhaft dargestellt wird. Mit Hilfe dieser Beispielimplementierung wurden
+für diese Arbeit Simulationen und Messungen durchgeführt. Sie ermöglichen es die
+Frage zu beantworten, ob es sinnvoll ist, eine SSD als Cache zu nutzen. Somit
+wird abschließend diese Fragestellung anhand der gewonnenen Messergebnisse unter
+den Gesichtspunkten der Leistungssteigerung und des zusätzlichen
+Ressourcenverbrauchs durch den Cache diskutiert.
+
+\end{minipage}
+\end{center}

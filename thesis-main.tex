@@ -396,217 +396,66 @@
 % Hyphenations %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \hyphenation{
-    Cache-block
-    Ker-nel-mo-dul
-    Cache-meta-daten-struk-tur
-    Kon-struk-tor-rou-tine
-    Flash-spei-cher-me-dien
-    Da-ten-strom-ma-ni-pu-la-ti-onen
-    Cache
-    Booten
+	Cache-block
+	Ker-nel-mo-dul
+	Cache-meta-daten-struk-tur
+	Kon-struk-tor-rou-tine
+	Flash-spei-cher-me-dien
+	Da-ten-strom-ma-ni-pu-la-ti-onen
+	Cache
+	Booten
 }
 
-% Title page %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Main Document %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \begin{document}
+
 \renewcommand{\thepage}{\roman{page}}
 
-\begin{titlepage}
-\titleFont
-\begin{figure}
-\titleFont
-  \begin{flushright}
-      \phantomsection
-      \pdfbookmark{Titelblatt}{Titelblatt}
-      \begin{tabular}[m]{r}
-        Technische Universität Berlin \\
-        Fakultät Elektrotechnik und Informatik \\
-        Institut für Telekommunikationssysteme \\
-        Fachgebiet Kommunikations- und Betriebssysteme \\
-      \end{tabular}%
-      \begin{tabular}[m]{c}
-        \includegraphics[width=2.5cm]{figures/tu-logo}
-      \end{tabular}
-  \end{flushright}
-\end{figure}
-
-\begin{center}
-\rule{0pt}{0pt}
-\vfill
-\vfill
-\vfill
-
-\begin{Huge}
-\titleFontBold
-SSD-basiertes Caching\\[0.75ex]
-von Blockgeräten\\[0.75ex]
-\end{Huge}
-
-\vfill
-\vfill
-
-\begin{huge}
-\titleFontBold
-Diplomarbeit
-\end{huge} \\
-\vspace{.5cm}
-vorgelegt von \\
-\vspace{.5cm}
-\begin{Large}
-\titleFontBold
-Anselm Busse
-\end{Large} \\ \vspace{.5cm}
-
-\vfill
-\vfill
-\vfill
-\vfill
-\vfill
-
-\begin{tabular}{rl}
-Referent:    & Prof. Dr. Hans-Ulrich Heiß\\
-Korreferent: & Prof. Dr.-Ing. habil. Gero Mühl\\
-Betreuer:    & Dr.-Ing. Jan Richling\\
-\end{tabular}
-\end{center}
-\end{titlepage}
-\textFont
-
-\thispagestyle{empty}
-
-\cleardoublepage
-\vspace*{\fill}
-
-Die selbständige und eigenhändige Ausfertigung versichert an Eides statt \newline
-Berlin, den 28. Juni 2010 \newline \newline
-\hbox{} \dotfill \hspace{7.5cm} \hbox{} \newline
-\hbox{} \begin{small}
-Unterschrift
-\end{small}
+\include{preface1-titlepage}      \cleardoublepage{}
+\include{preface2-affirmation}    \cleardoublepage{}
 
 % Table of contents, list of figures, etc. %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\cleardoublepage
 \phantomsection
 \addcontentsline{toc}{chapter}{\contentsname}
-\tableofcontents
-\cleardoublepage
-\phantomsection
-\addcontentsline{toc}{chapter}{\listfigurename}
-\listoffigures
-\cleardoublepage
+\tableofcontents                  \cleardoublepage{}
 
 \phantomsection
-\chapter*{Abkürzungsverzeichnis}
-\addcontentsline{toc}{chapter}{Abkürzungsverzeichnis}
-\renewcommand{\chaptermark}[1]{\markboth{\MakeUppercase{#1}}{}}
-\chaptermark{}
-\begin{acronym}[]
- \acro{BIO}{Block-Ein-/Ausgabe}
- \acro{DM}{Device-Mapper}
- \acro{ECC}{Error Correction Code}
- \acro{ext3}{Third Extended Filesystem}
- \acro{ITM}{Intel Turbo Memory}
- \acro{LFU}{Least Frequently Used}
- \acro{LRU}{Least Recently Used}
- \acro{MLC}{Multi-Level-Cell}
- \acro{RAID}{redundante Anordnung kostengünstiger Festplatten}
- \newacroplural{RAID}[\mbox{RAIDs}]{redundante Anordnung kostengünstiger Festplatten}
- \acro{SAN}{Storage Area Network}
- \acro{SLC}{Single-Level-Cell}
- \acro{SSD}{Solid State Drive}
- \acro{UUID}{Universally Unique Identifier}
-\end{acronym}
+\addcontentsline{toc}{chapter}{\listfigurename}
+\listoffigures                    \cleardoublepage{}
+
+\include{preface3-abbreviations}  \cleardoublepage{}
 
 % Content %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\cleardoublepage
+
 \setcounter{page}{1}
 \renewcommand{\thepage}{\arabic{page}}
 \renewcommand{\chaptermark}[1]{\markboth{\thechapter\ \MakeUppercase{#1}}{}}
 
-\include{chapter1-intro}          \cleardoublepage
-\include{chapter2-background}     \cleardoublepage
-\include{chapter3-related_work}   \cleardoublepage
-\include{chapter4-problem}        \cleardoublepage
-\include{chapter5-architecture}   \cleardoublepage
+\include{chapter1-intro}          \cleardoublepage{}
+\include{chapter2-background}     \cleardoublepage{}
+\include{chapter3-related_work}   \cleardoublepage{}
+\include{chapter4-problem}        \cleardoublepage{}
+\include{chapter5-architecture}   \cleardoublepage{}
 \addtocontents{toc}{\protect\newpage}
-\include{chapter6-implementation} \cleardoublepage
-\include{chapter7-evaluation}     \cleardoublepage
-\include{chapter8-conclusion}     \cleardoublepage
-\include{chapterA-appendix}       \cleardoublepage
+\include{chapter6-implementation} \cleardoublepage{}
+\include{chapter7-evaluation}     \cleardoublepage{}
+\include{chapter8-conclusion}     \cleardoublepage{}
+\include{chapterA-appendix}       \cleardoublepage{}
 
 % References %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\cleardoublepage
 \phantomsection
 \addcontentsline{toc}{chapter}{Literaturverzeichnis}
 \chaptermark{Literaturverzeichnis}
 \sectionmark{Literaturverzeichnis}
-\printbibliography
-\newpage
-\chaptermark{}
-\sectionmark{}
-\mbox{}
-\newpage
+\printbibliography                \clearpage{}
+\chaptermark{} \sectionmark{}     \cleardoublepage{}
 
-%% Temporarily enlarge this page to push
-%% down the bottom margin
-\pagestyle{empty}
-\mbox{}
-\newpage
-\vspace*{5mm}
-\begin{center}
-\begin{minipage}{.8\textwidth}
-\titleFont \large
-\Author \newline
-\titleFontBold \Large
-\Title \newline
-\titleFont \normalsize
-
-\setlength{\parskip}{1em}
-
-Diese Arbeit beschäftigt sich mit der Frage, ob es möglich und sinnvoll ist ein
-Solid State Drive (SSD) als Cache für eine herkömmliche Magnetscheiben-basierte
-Festplatte zu nutzen.
-
-In aktuellen Rechnersystemen stellt häufig der Massenspeicher in Form einer
-Festplatte den Flaschenhals des Systems dar. Dies ist darauf zurückzuführen,
-dass Festplatten auf Grund ihres mechanischen Aufbaus eine Zugriffszeit haben,
-die um mehrere Größenordnungen schlechter ist als die der nächsten Stufe in der
-Speicherhierarchie -- dem Arbeitsspeicher. Um dieses Problem zu beseitigen,
-wurde in den letzten Jahren halbleiterbasierter Massenspeicher als Ersatz für
-Festplatten eingeführt, der dieses Defizit nicht besitzt. Diese Laufwerke werden
-unter der Bezeichnung SSD vermarktet. SSDs haben jedoch den Nachteil, dass die
-Kosten pro Byte wesentlich über denen von Festplatten liegen. Darum ist mit
-einer vollständigen Substitution von Festplatten durch SSDs in den kommenden
-Jahren kaum zu rechnen.
-
-Die momentane Situation, die daraus resultiert, ist die, dass Anwender häufig
-genutzte Daten auf einer meist kleinen SSD speichern und die restlichen Daten
-auf einer langsameren Festplatte. Dieses Vorgehen ist für den Nutzer jedoch sehr
-umständlich. Deshalb wird in dieser Arbeit die Nutzung von SSDs als
-transparenter Cache für Festplatten vorgeschlagen. Dadurch würde nur ein
-geringes Eingreifen des Nutzers erforderlich sein und es ihm trotzdem
-ermöglicht, die Vorteile von SSDs zu nutzen.
-
-Es werden im Verlauf dieser Arbeit dafür zunächst die technischen Grundlagen von
-Festplatten und SSDs dargestellt und andere Arbeiten betrachtet, die ein
-ähnliches Konzept verfolgen bzw. für die praktische Realisierung des Cache von
-Bedeutung sind. Auf Grundlage dieser technischen und theoretischen
-Rahmenbedingungen wird eine konkrete Problem- und Aufgabenstellung formuliert.
-Basierend auf dieser wird eine Architektur für einen blockbasierten Cache
-vorgeschlagen, deren konkrete Implementierung ebenfalls in dieser Arbeit
-beispielhaft dargestellt wird. Mit Hilfe dieser Beispielimplementierung wurden
-für diese Arbeit Simulationen und Messungen durchgeführt. Sie ermöglichen es die
-Frage zu beantworten, ob es sinnvoll ist, eine SSD als Cache zu nutzen. Somit
-wird abschließend diese Fragestellung anhand der gewonnenen Messergebnisse unter
-den Gesichtspunkten der Leistungssteigerung und des zusätzlichen
-Ressourcenverbrauchs durch den Cache diskutiert.
-
-\end{minipage}
-\end{center}
+\include{postface1-abstract}
 
 \end{document}
