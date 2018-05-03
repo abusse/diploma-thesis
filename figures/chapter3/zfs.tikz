@@ -3,6 +3,7 @@
         xbar,
         xmode = log,
         /pgf/bar shift=0pt,
+        axis on top=true,
         ytick={0,1,2},
         tick style={draw=none},
         x tick label style={/pgf/number format/1000 sep={\,}},

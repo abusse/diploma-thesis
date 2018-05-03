@@ -3,14 +3,6 @@
 
 \documentclass[twoside, 11pt, a4paper]{report} 
 
-% Document Metadata %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-\def\Author   {Anselm Busse}
-\def\Title    {SSD-basiertes Caching von Blockgeräten}
-\def\Subject  {Diplomarbeit} 
-\def\Keywords {SSD, HDD, Cache, Blockgerät}
-
 % In- and Output Encoding %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -18,6 +10,14 @@
 \usepackage{cmap}
 \usepackage[T1]{fontenc}
 \usepackage{fix-cm}
+
+% Document Metadata %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\def\Author   {Anselm Busse}
+\def\Title    {SSD-basiertes Caching von Blockgeräten}
+\def\Subject  {Diplomarbeit} 
+\def\Keywords {SSD, HDD, Cache, Blockgerät}
 
 % Definitions for conditional document processing %%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -141,6 +141,7 @@
       %pagebackref=true,
       plainpages=false,
       pageanchor=true,
+      hidelinks,
       %backref=page,
       }
 \PassOptionsToPackage{dvipsnames}{xcolor}
@@ -416,6 +417,8 @@
 \begin{figure}
 \titleFont
   \begin{flushright}
+      \phantomsection
+      \pdfbookmark{Titelblatt}{Titelblatt}
       \begin{tabular}[m]{r}
         Technische Universität Berlin \\
         Fakultät Elektrotechnik und Informatik \\
@@ -470,6 +473,8 @@ Betreuer:    & Dr.-Ing. Jan Richling\\
 \end{titlepage}
 \textFont
 
+\thispagestyle{empty}
+
 \cleardoublepage
 \vspace*{\fill}
 
@@ -484,6 +489,8 @@ Unterschrift
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \cleardoublepage
+\phantomsection
+\addcontentsline{toc}{chapter}{\contentsname}
 \tableofcontents
 \cleardoublepage
 \phantomsection
@@ -544,14 +551,12 @@ Unterschrift
 \sectionmark{}
 \mbox{}
 \newpage
-\mbox{}
-\newpage
-\mbox{}
-\newpage
 
 %% Temporarily enlarge this page to push
 %% down the bottom margin
-\thispagestyle{empty}
+\pagestyle{empty}
+\mbox{}
+\newpage
 \vspace*{5mm}
 \begin{center}
 \begin{minipage}{.8\textwidth}

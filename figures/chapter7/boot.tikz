@@ -2,6 +2,7 @@
     \begin{axis}[
         xbar,
         /pgf/bar shift=0pt,
+        axis on top=true,
         ytick={0,...,3},
         ytick style={draw=none},
         yticklabel style={/pgf/number format/fixed},
