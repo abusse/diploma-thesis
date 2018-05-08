@@ -9,12 +9,14 @@ In case you want to cite the document, please use the following BibTex entry:
 
 ```
 @thesis{busse2010ssdcaching,
-  title={SSD-basiertes Caching von Blockger\"aten},
-  author={Busse, Anselm},
-  school={Technische Universit\"at Berlin, Germany},
-  year=2010,
-  month=06,
-  note={}
+    title  = {SSD-basiertes Caching von Blockger\"aten},
+    author = {Anselm Busse},
+    school = {Technische Universit\"at Berlin, Germany},
+    type   = {Diploma Thesis},
+    year   = 2010,
+    month  = jun,
+    doi    = {10.14279/depositonce-6939},
+    url    = {https://depositonce.tu-berlin.de/handle/11303/7761}
 }
 ```
 
