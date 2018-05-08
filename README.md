@@ -3,7 +3,9 @@
 This is the LaTeX source code of my diploma thesis that I wrote back in 2010 at
 TU Berlin. The topic is _SSD based caching of block devices_. However, the
 thesis is only available in German (sorry for the inconvenience). The document
-can be build with [latexmk](https://ctan.org/pkg/latexmk).
+can be build with [latexmk](https://ctan.org/pkg/latexmk). The source code for
+the Linux kernel extension developed for the thesis is linked as submodule in
+the `linux` directory.
 
 In case you want to cite the document, please use the following BibTex entry:
 
